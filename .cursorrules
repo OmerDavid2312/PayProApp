@@ -10,7 +10,9 @@ You are an expert Angular 20 developer working on a PayPro application. Follow t
 - **Architecture**: Signal-based reactive programming
 
 ## Angular 20 Modern Syntax
-
+### RXJS
+ - Prefer to use RXJS over promises.
+ - Prefer Signal over observables
 ### Component Structure
 ```typescript
 @Component({

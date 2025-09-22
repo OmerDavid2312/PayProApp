@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject, signal, computed, effect } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, Subject, firstValueFrom } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, tap, switchMap, map } from 'rxjs';
 import { LoginDetails, SuccessfullLoginInfo, BasicUser } from '../models/login.models';
 import { AuthService } from './auth.service';
 
@@ -8,38 +8,62 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class UserService {
-  private _redirectUrl: string | null = null;
-  private _user$: Subject<BasicUser | null> = new Subject();
-  private _user: BasicUser | null = null;
-  connectedAnonymously: boolean = true;
+  // ✅ Using inject() instead of constructor injection
+  private readonly http = inject(HttpClient);
+  private readonly authService = inject(AuthService);
 
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService
-  ) {
-    this.setUser(this.authService.auth);
-    this.authService.auth$.subscribe((auth) => {
-      this.setUser(this.authService.auth);
+  // Signals for reactive state management
+  private readonly _user = signal<BasicUser | null>(null);
+  private readonly _redirectUrl = signal<string | null>(null);
+  private readonly _isConnectedAnonymously = signal<boolean>(true);
+
+  // Public readonly signals
+  readonly user = this._user.asReadonly();
+  readonly redirectUrl = this._redirectUrl.asReadonly();
+  readonly isConnectedAnonymously = this._isConnectedAnonymously.asReadonly();
+
+  // Computed signals
+  readonly isLoggedIn = computed(() => {
+    return this.authService.isAuthenticated() && !this._isConnectedAnonymously();
+  });
+
+  readonly userDisplayName = computed(() => {
+    const user = this._user();
+    return user?.personalData?.firstName && user?.personalData?.lastName
+      ? `${user.personalData.firstName} ${user.personalData.lastName}`
+      : user?.personalData?.firstName || 'Unknown User';
+  });
+
+  // Observable streams for external subscriptions
+  private readonly _userSubject = new BehaviorSubject<BasicUser | null>(null);
+  readonly user$ = this._userSubject.asObservable();
+
+  constructor() {
+    // Effect to sync user signal with observable
+    effect(() => {
+      const user = this._user();
+      this._userSubject.next(user);
     });
+
+    // React to auth changes using RxJS
+    this.authService.auth$.subscribe((auth) => {
+      this.setUserFromAuth(auth);
+    });
+
+    // Initialize user from current auth state
+    this.setUserFromAuth(this.authService.authData());
   }
 
-  get user$(): Observable<BasicUser | null> {
-    return this._user$.asObservable();
-  }
-
-  get user(): BasicUser | null {
-    return this._user;
-  }
-
-  set user(user: BasicUser | null) {
-    this._user = user;
-    this._user$.next(this.user);
-  }
-
-  setUser(auth: SuccessfullLoginInfo | null) {
-    if (auth && auth.user) {
-      this.user = auth.user;
+  private setUserFromAuth(auth: SuccessfullLoginInfo | null): void {
+    if (auth?.user) {
+      this._user.set(auth.user);
+    } else {
+      this._user.set(null);
     }
+  }
+
+  setRedirectUrl(url: string | null): void {
+    this._redirectUrl.set(url);
   }
 
   /**
@@ -47,8 +71,32 @@ export class UserService {
    * This is the main authentication method that users interact with
    */
   login(loginDetails: LoginDetails): Observable<SuccessfullLoginInfo> {
-    this.connectedAnonymously = false;
-    return this.http.post<SuccessfullLoginInfo>('/api/login', loginDetails);
+    this._isConnectedAnonymously.set(false);
+    return this.http.post<SuccessfullLoginInfo>('/smartClub/rest/authorizedUsersManagement/login', loginDetails).pipe(
+      tap(response => {
+        // Update auth data using RxJS operators instead of async/await
+        this.authService.setAuthData(response);
+      })
+    );
+  }
+
+  /**
+   * Complete login process with user data fetching
+   * Returns an observable that handles the entire login flow
+   */
+  completeLogin(loginDetails: LoginDetails): Observable<SuccessfullLoginInfo> {
+    return this.login(loginDetails).pipe(
+      switchMap(authResponse => 
+        this.getMyUserInfo().pipe(
+          map(userInfo => {
+            // Update the auth response with user info
+            const completeAuth = { ...authResponse, user: userInfo };
+            this.authService.setAuthData(completeAuth);
+            return completeAuth;
+          })
+        )
+      )
+    );
   }
 
   /**
@@ -56,8 +104,10 @@ export class UserService {
    * Used for token refresh scenarios (not currently used in UI)
    */
   loginWithToken(loginDetails: LoginDetails): Observable<SuccessfullLoginInfo> {
-    this.connectedAnonymously = false;
-    return this.http.post<SuccessfullLoginInfo>('/api/loginWithToken', loginDetails);
+    this._isConnectedAnonymously.set(false);
+    return this.http.post<SuccessfullLoginInfo>('/api/loginWithToken', loginDetails).pipe(
+      tap(response => this.authService.setAuthData(response))
+    );
   }
 
   /**
@@ -66,12 +116,22 @@ export class UserService {
    * Only used when "Remember me" was previously checked
    */
   loginWithDeviceId(loginDetails: LoginDetails): Observable<SuccessfullLoginInfo> {
-    this.connectedAnonymously = false;
+    this._isConnectedAnonymously.set(false);
     return this.http.get<SuccessfullLoginInfo>('/api/loginWithDeviceId', {
       params: new HttpParams()
         .append('systemId', loginDetails.systemId.toString())
         .append('fingerPrint', loginDetails.mainDiskSerialNumber)
-    });
+    }).pipe(
+      switchMap(authResponse => 
+        this.getMyUserInfo().pipe(
+          map(userInfo => {
+            const completeAuth = { ...authResponse, user: userInfo };
+            this.authService.setAuthData(completeAuth);
+            return completeAuth;
+          })
+        )
+      )
+    );
   }
 
   /**
@@ -89,8 +149,10 @@ export class UserService {
     httpParams = httpParams.append('phoneNumber', loginDetails.userName);
     httpParams = httpParams.append('personalId', loginDetails.versionNumber);
     
-    this.connectedAnonymously = false;
-    return this.http.post<SuccessfullLoginInfo>('/api/loginByOTP', {}, { params: httpParams });
+    this._isConnectedAnonymously.set(false);
+    return this.http.post<SuccessfullLoginInfo>('/api/loginByOTP', {}, { params: httpParams }).pipe(
+      tap(response => this.authService.setAuthData(response))
+    );
   }
 
   /**
@@ -99,27 +161,62 @@ export class UserService {
    * Could be useful for demo mode or public sections
    */
   loginAnonymous(systemId: number): Observable<SuccessfullLoginInfo> {
-    this.connectedAnonymously = true;
+    this._isConnectedAnonymously.set(true);
     return this.http.get<SuccessfullLoginInfo>('/api/loginAnonymous', {
       params: new HttpParams()
         .append('systemId', systemId.toString())
         .append('timeZone', (new Date().getTimezoneOffset() * -60000).toString())
-    });
+    }).pipe(
+      tap(response => this.authService.setAuthData(response))
+    );
   }
 
   getMyUserInfo(): Observable<BasicUser> {
     return this.http.get<BasicUser>('/api/getMyUserInfo');
   }
 
-  async setMyPersonalData(successfulLoginInfo: SuccessfullLoginInfo) {
+  /**
+   * Update personal data using RxJS streams
+   * Returns an observable for the complete operation
+   */
+  setMyPersonalData(successfulLoginInfo: SuccessfullLoginInfo): Observable<SuccessfullLoginInfo> {
     // Update auth with token first
     this.authService.setAuthData(successfulLoginInfo);
-    successfulLoginInfo.user = await firstValueFrom(this.getMyUserInfo());
+    
+    return this.getMyUserInfo().pipe(
+      tap(userInfo => {
+        successfulLoginInfo.user = userInfo;
+        this.authService.setAuthData(successfulLoginInfo);
+      }),
+      map(() => successfulLoginInfo)
+    );
   }
 
-  logout() {
-    this.authService.deleteAllData();
-    this.user = null;
-    // Navigate to login page
+  logout(): Observable<void> {
+    return new Observable(subscriber => {
+      this.authService.deleteAllData();
+      this._user.set(null);
+      this._isConnectedAnonymously.set(true);
+      this._redirectUrl.set(null);
+      subscriber.next();
+      subscriber.complete();
+    });
+  }
+
+  // Legacy getters for backward compatibility
+  get userValue(): BasicUser | null {
+    return this._user();
+  }
+
+  get redirectUrlValue(): string | null {
+    return this._redirectUrl();
+  }
+
+  get connectedAnonymously(): boolean {
+    return this._isConnectedAnonymously();
+  }
+
+  set connectedAnonymously(value: boolean) {
+    this._isConnectedAnonymously.set(value);
   }
 }

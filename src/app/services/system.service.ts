@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Observable, from } from 'rxjs';
 import { LoginDetails } from '../models/login.models';
 
 @Injectable({
@@ -67,5 +68,12 @@ export class SystemService {
 
   getAutoLoginEnabled(): boolean {
     return localStorage.getItem('autoLogin') === 'true';
+  }
+
+  /**
+   * Observable version of getDeviceUniqueId for RxJS streams
+   */
+  getDeviceUniqueId$(): Observable<string> {
+    return from(this.getDeviceUniqueId());
   }
 }

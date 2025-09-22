@@ -2,9 +2,11 @@
   <div class="dashboard-header">
     <div class="welcome-section">
       <h1 class="welcome-title">Welcome to PayPro Dashboard</h1>
-      <p class="welcome-subtitle" *ngIf="user?.personalData">
-        Hello, {{ user?.personalData?.firstName }} {{ user?.personalData?.lastName }}!
-      </p>
+      @if (user()?.personalData) {
+        <p class="welcome-subtitle">
+          Hello, {{ userDisplayName() }}!
+        </p>
+      }
     </div>
     
     <div class="header-actions">
@@ -21,44 +23,54 @@
   <div class="dashboard-content">
     <div class="info-cards">
       <!-- User Info Card -->
-      <p-card header="User Information" *ngIf="user?.personalData" styleClass="user-info-card">
-        <div class="user-details">
-          <div class="detail-item">
-            <span class="detail-label">Full Name:</span>
-            <span class="detail-value">{{ user?.personalData?.firstName }} {{ user?.personalData?.lastName }}</span>
+      @if (user()?.personalData; as personalData) {
+        <p-card header="User Information" styleClass="user-info-card">
+          <div class="user-details">
+            <div class="detail-item">
+              <span class="detail-label">Full Name:</span>
+              <span class="detail-value">{{ personalData.firstName }} {{ personalData.lastName }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Email:</span>
+              <span class="detail-value">{{ personalData.email || 'Not provided' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Phone:</span>
+              <span class="detail-value">{{ personalData.tel || 'Not provided' }}</span>
+            </div>
+            @if (personalData.accountType !== undefined) {
+              <div class="detail-item">
+                <span class="detail-label">Account Type:</span>
+                <p-tag [value]="getAccountTypeLabel(personalData.accountType)" severity="info"></p-tag>
+              </div>
+            }
           </div>
-          <div class="detail-item">
-            <span class="detail-label">Email:</span>
-            <span class="detail-value">{{ user?.personalData?.email || 'Not provided' }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Phone:</span>
-            <span class="detail-value">{{ user?.personalData?.tel || 'Not provided' }}</span>
-          </div>
-          <div class="detail-item" *ngIf="user?.personalData?.accountType !== undefined">
-            <span class="detail-label">Account Type:</span>
-            <p-tag [value]="getAccountTypeLabel(user?.personalData?.accountType!)" severity="info"></p-tag>
-          </div>
-        </div>
-      </p-card>
+        </p-card>
+      }
 
       <!-- Session Info Card -->
-      <p-card header="Session Information" *ngIf="authInfo" styleClass="session-info-card">
-        <div class="session-details">
-          <div class="detail-item">
-            <span class="detail-label">User ID:</span>
-            <span class="detail-value">{{ authInfo.authorizedUserId }}</span>
+      @if (authInfo(); as auth) {
+        <p-card header="Session Information" styleClass="session-info-card">
+          <div class="session-details">
+            <div class="detail-item">
+              <span class="detail-label">User ID:</span>
+              <span class="detail-value">{{ auth.authorizedUserId }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Authorization Level:</span>
+              <p-tag [value]="getAuthLevelLabel(auth.authorizationLevel)" severity="success"></p-tag>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Token Status:</span>
+              @if (auth.token) {
+                <p-tag value="Active" severity="success"></p-tag>
+              } @else {
+                <p-tag value="Inactive" severity="danger"></p-tag>
+              }
+            </div>
           </div>
-          <div class="detail-item">
-            <span class="detail-label">Authorization Level:</span>
-            <p-tag [value]="getAuthLevelLabel(authInfo.authorizationLevel)" severity="success"></p-tag>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Token Status:</span>
-            <p-tag value="Active" severity="success" *ngIf="authInfo.token"></p-tag>
-          </div>
-        </div>
-      </p-card>
+        </p-card>
+      }
     </div>
 
     <!-- Quick Actions -->

@@ -8,6 +8,9 @@
 
 ## Angular Best Practices
 
+### RXJS
+ - Prefer to use RXJS over promises.
+ - Prefer Signal over obserabvles
 ### Component Architecture
 - Use standalone components when possible
 - Prefer signals over traditional observables for reactive state
