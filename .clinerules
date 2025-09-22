@@ -1,0 +1,159 @@
+# Cline Rules for PayPro Angular 20 + PrimeNG 20 Project
+
+## Project Standards
+- **Angular Version**: 20.x (latest stable)
+- **PrimeNG Version**: 20.x (latest stable)
+- **TypeScript**: Use strict mode and latest features
+- **CSS Framework**: PrimeFlex for layouts (no custom CSS overrides on PrimeNG)
+
+## Angular Best Practices
+
+### Component Architecture
+- Use standalone components when possible
+- Prefer signals over traditional observables for reactive state
+- Use Angular's new control flow syntax (@if, @for, @switch)
+- Always use OnPush change detection strategy
+- Use inject() function instead of constructor injection
+
+### Forms
+- Always use Angular Reactive Forms (FormBuilder, FormGroup, FormControl)
+- Use proper TypeScript typing for forms
+- Implement proper form validation with custom validators when needed
+- Use signal-based form state management
+
+### Services
+- Use providedIn: 'root' for singleton services
+- Implement proper error handling with RxJS operators
+- Use new functional interceptors instead of class-based
+- Prefer functional guards over class-based guards
+
+## PrimeNG 20 Guidelines
+
+### Component Usage
+- Use native PrimeNG components without style overrides
+- Prefer directive forms over component forms when available:
+  - Use `pInputText` directive instead of `<p-inputtext>`
+  - Use `pButton` directive instead of `<p-button>` when appropriate
+- Always use proper PrimeNG form integration with Angular reactive forms
+- Use PrimeNG's built-in validation styling
+
+### Allowed PrimeNG Components
+All PrimeNG v20 components
+
+### PrimeFlex Usage
+- Use PrimeFlex classes exclusively for layouts
+- Common layout patterns:
+  - `flex` for flexbox containers
+  - `grid` for CSS grid layouts
+  - `justify-content-*`, `align-items-*` for alignment
+  - `gap-*` for spacing between items
+  - `p-*`, `m-*` for padding and margins
+  - `w-*`, `h-*` for width and height
+- Responsive utilities: `sm:`, `md:`, `lg:`, `xl:`
+
+## Code Style Rules
+
+### TypeScript
+```typescript
+// ✅ Good - Use inject() function
+@Component({...})
+export class MyComponent {
+  private readonly service = inject(MyService);
+  
+  // ✅ Use signals for reactive state
+  readonly data = signal<Data[]>([]);
+  readonly loading = signal(false);
+}
+
+// ❌ Bad - Constructor injection
+constructor(private service: MyService) {}
+```
+
+### Templates
+```html
+<!-- ✅ Good - New control flow -->
+@if (loading()) {
+  <p-progressSpinner />
+}
+
+@for (item of items(); track item.id) {
+  <p-card>{{ item.name }}</p-card>
+}
+
+<!-- ❌ Bad - Old structural directives -->
+<div *ngIf="loading">...</div>
+<div *ngFor="let item of items">...</div>
+```
+
+### Forms
+```typescript
+// ✅ Good - Typed reactive forms
+interface LoginForm {
+  username: FormControl<string>;
+  password: FormControl<string>;
+}
+
+loginForm = this.fb.group<LoginForm>({
+  username: this.fb.control('', { validators: [Validators.required] }),
+  password: this.fb.control('', { validators: [Validators.required] })
+});
+```
+
+### Styling
+```html
+<!-- ✅ Good - PrimeFlex only -->
+<div class="flex justify-content-between align-items-center gap-3 p-4">
+  <p-card class="w-full">
+    <div class="grid grid-nogutter">
+      <div class="col-12 md:col-6">Content</div>
+    </div>
+  </p-card>
+</div>
+
+<!-- ❌ Bad - Custom CSS overrides -->
+<div class="custom-wrapper">
+  <p-card style="margin: 20px;">...</p-card>
+</div>
+```
+
+## File Structure
+```
+src/app/
+├── components/          # Shared components
+├── pages/              # Route components
+├── services/           # Business logic services
+├── guards/             # Route guards (functional)
+├── interceptors/       # HTTP interceptors (functional)
+├── models/             # TypeScript interfaces/types
+├── utils/              # Utility functions
+└── shared/             # Shared modules/components
+```
+
+## Performance Rules
+- Use OnPush change detection strategy
+- Implement trackBy functions for *ngFor loops
+- Use async pipe or signals for template data binding
+- Lazy load feature modules
+- Use tree-shakable providers
+
+## Testing Guidelines
+- Write unit tests for all components and services
+- Use Angular Testing Library for component testing
+- Mock dependencies properly
+- Test user interactions, not implementation details
+
+## Security Rules
+- Always sanitize user inputs
+- Use HTTPS interceptors for API calls
+- Implement proper authentication guards
+- Never store sensitive data in localStorage without encryption
+
+## Code Review Checklist
+- [ ] Uses Angular 20 syntax and features
+- [ ] Uses PrimeNG 20 components correctly
+- [ ] Uses PrimeFlex for all layouts
+- [ ] No custom CSS overrides on PrimeNG
+- [ ] Proper TypeScript typing
+- [ ] Follows reactive patterns (signals/observables)
+- [ ] Implements proper error handling
+- [ ] Includes appropriate tests
