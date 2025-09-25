@@ -1,41 +1,41 @@
 {
     "/smartClub/rest/*": {
         "changeOrigin": true,
-        "logLevel": "info",
+        "logLevel": "debug",
         "target": {
-            "host": "hacountry.smart-club.co.il",
-            "protocol": "https:",
-            "port": 443
+            "host": "dev.smart-club.co.il",
+            "protocol": "http:",
+            "port": 80
         },
-        "secure": true
+        "secure": false
     },
     "/smartClub/app/*": {
         "changeOrigin": true,
-        "logLevel": "info",
+        "logLevel": "debug",
         "target": {
-            "host": "hacountry.smart-club.co.il",
-            "protocol": "https:",
-            "port": 443
+            "host": "Dev.smart-club.co.il",
+            "protocol": "http:",
+            "port": 80
         },
-        "secure": true
+        "secure": false
     },
     "/TheLaundryPass/rest/*": {
         "changeOrigin": true,
-        "logLevel": "info",
+        "logLevel": "debug",
         "target": {
             "host": "192.168.10.46",
-            "protocol": "https:",
-            "port": 443
+            "protocol": "http:",
+            "port": 80
         },
-        "secure": true
+        "secure": false
     },
     "/push-server/*": {
         "wss": true,
         "logLevel": "info",
         "target": {
-            "host": "hacountry.smart-club.co.il",
+            "host": "Dev.smart-club.co.il",
             "protocol": "wss:",
-            "port": 443
+            "port": 80
         },
         "secure": false
     }
