@@ -1,0 +1,99 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div class="welcome-section">
+      <h1 class="welcome-title">Welcome to PayPro Dashboard</h1>
+      @if (user()?.personalData) {
+        <p class="welcome-subtitle">
+          Hello, {{ userDisplayName() }}!
+        </p>
+      }
+    </div>
+    
+    <div class="header-actions">
+      <p-button 
+        label="Logout" 
+        icon="pi pi-sign-out" 
+        (onClick)="logout()"
+        severity="secondary"
+        size="small">
+      </p-button>
+    </div>
+  </div>
+
+  <div class="dashboard-content">
+    <div class="info-cards">
+      <!-- User Info Card -->
+      @if (user()?.personalData; as personalData) {
+        <p-card header="User Information" styleClass="user-info-card">
+          <div class="user-details">
+            <div class="detail-item">
+              <span class="detail-label">Full Name:</span>
+              <span class="detail-value">{{ personalData.firstName }} {{ personalData.lastName }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Email:</span>
+              <span class="detail-value">{{ personalData.email || 'Not provided' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Phone:</span>
+              <span class="detail-value">{{ personalData.tel || 'Not provided' }}</span>
+            </div>
+            @if (personalData.accountType !== undefined) {
+              <div class="detail-item">
+                <span class="detail-label">Account Type:</span>
+                <p-tag [value]="getAccountTypeLabel(personalData.accountType)" severity="info"></p-tag>
+              </div>
+            }
+          </div>
+        </p-card>
+      }
+
+      <!-- Session Info Card -->
+      @if (authInfo(); as auth) {
+        <p-card header="Session Information" styleClass="session-info-card">
+          <div class="session-details">
+            <div class="detail-item">
+              <span class="detail-label">User ID:</span>
+              <span class="detail-value">{{ auth.authorizedUserId }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Authorization Level:</span>
+              <p-tag [value]="getAuthLevelLabel(auth.authorizationLevel)" severity="success"></p-tag>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Token Status:</span>
+              @if (auth.token) {
+                <p-tag value="Active" severity="success"></p-tag>
+              } @else {
+                <p-tag value="Inactive" severity="danger"></p-tag>
+              }
+            </div>
+          </div>
+        </p-card>
+      }
+    </div>
+
+    <!-- Quick Actions -->
+    <p-card header="Quick Actions" styleClass="actions-card">
+      <div class="action-buttons">
+        <p-button 
+          label="Profile Settings" 
+          icon="pi pi-user" 
+          styleClass="action-btn">
+        </p-button>
+        <p-button 
+          label="Security" 
+          icon="pi pi-shield" 
+          styleClass="action-btn"
+          severity="secondary">
+        </p-button>
+        <p-button 
+          label="Help & Support" 
+          icon="pi pi-question-circle" 
+          styleClass="action-btn"
+          severity="help">
+        </p-button>
+      </div>
+    </p-card>
+  </div>
+</div>
