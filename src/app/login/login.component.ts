@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -36,122 +36,8 @@ import { NavigationUtils } from '../utils/navigation.utils';
   ],
   providers: [MessageService],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="flex align-items-center justify-content-center min-h-screen p-6"
-         style="background: linear-gradient(135deg, #e3e8ff 0%, #98a5e1 100%);">
-
-      <p-toast></p-toast>
-
-      <p-card class="w-full max-w-md shadow-4 border-round-lg">
-        <ng-template pTemplate="header">
-          <div class="text-center py-4">
-            <h1 class="text-3xl font-bold text-900 m-0">PayPro Login</h1>
-            <p class="text-600 mt-2 mb-0">Welcome back! Please sign in to your account.</p>
-          </div>
-        </ng-template>
-
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-column gap-4">
-
-          <!-- System ID Field -->
-          @if (showSystemId()) {
-            <div class="field">
-              <label for="systemId" class="block text-900 font-medium mb-2">System ID *</label>
-              <input pInputText
-                     id="systemId"
-                     type="number"
-                     formControlName="systemId"
-                     placeholder="Enter system ID"
-                     class="w-full"
-                     [class.ng-invalid]="isFieldInvalid('systemId')"
-              />
-              @if (isFieldInvalid('systemId')) {
-                <small class="p-error">System ID is required and must be numeric</small>
-              }
-            </div>
-          }
-
-          <!-- Username Field -->
-          <div class="field">
-            <label for="username" class="block text-900 font-medium mb-2">Username *</label>
-            <input pInputText
-                   id="username"
-                   formControlName="username"
-                   placeholder="Enter your username"
-                   class="w-full"
-                   [class.ng-invalid]="isFieldInvalid('username')"
-            />
-            @if (isFieldInvalid('username')) {
-              <small class="p-error">Username is required</small>
-            }
-          </div>
-
-          <!-- Password Field -->
-          <div class="field">
-            <label for="password" class="block text-900 font-medium mb-2">Password *</label>
-            <p-password formControlName="password"
-                        placeholder="Enter your password"
-                        [toggleMask]="true"
-                        [feedback]="false"
-                        styleClass="w-full"
-                        inputStyleClass="w-full"
-            />
-            @if (isFieldInvalid('password')) {
-              <small class="p-error">Password is required</small>
-            }
-          </div>
-
-          <!-- Auto Login Checkbox -->
-          <div class="field">
-            <div class="flex align-items-center gap-2">
-              <p-checkbox inputId="autoLogin"
-                          formControlName="autoLogin"
-                          [binary]="true"/>
-              <label for="autoLogin" class="text-900">Remember me for automatic login</label>
-            </div>
-          </div>
-
-          <!-- Submit Button -->
-          <p-button type="submit"
-                    label="Sign In"
-                    icon="pi pi-sign-in"
-                    [loading]="loading()"
-                    [disabled]="loading()"
-                    styleClass="w-full"
-                    size="large"/>
-        </form>
-      </p-card>
-    </div>
-  `,
-  styles: [`
-    :host ::ng-deep {
-      .p-card {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-      }
-
-      .p-card .p-card-header {
-        background: transparent;
-        border-bottom: 1px solid #e9ecef;
-      }
-
-      .p-inputtext:focus,
-      .p-password-input:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.2);
-      }
-
-      .p-button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border: none;
-      }
-
-      .p-button:hover {
-        background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-        border: none;
-
-      }
-    }
-  `]
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnDestroy {
   // Subject for managing subscriptions
