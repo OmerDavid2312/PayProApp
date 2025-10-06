@@ -37,11 +37,11 @@ import { NavigationUtils } from '../utils/navigation.utils';
   providers: [MessageService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="flex align-items-center justify-content-center min-h-screen p-4" 
-         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-      
+    <div class="flex align-items-center justify-content-center min-h-screen p-6"
+         style="background: linear-gradient(135deg, #e3e8ff 0%, #98a5e1 100%);">
+
       <p-toast></p-toast>
-      
+
       <p-card class="w-full max-w-md shadow-4 border-round-lg">
         <ng-template pTemplate="header">
           <div class="text-center py-4">
@@ -49,21 +49,21 @@ import { NavigationUtils } from '../utils/navigation.utils';
             <p class="text-600 mt-2 mb-0">Welcome back! Please sign in to your account.</p>
           </div>
         </ng-template>
-        
+
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-column gap-4">
-          
+
           <!-- System ID Field -->
           @if (showSystemId()) {
             <div class="field">
               <label for="systemId" class="block text-900 font-medium mb-2">System ID *</label>
-              <input pInputText 
+              <input pInputText
                      id="systemId"
                      type="number"
                      formControlName="systemId"
                      placeholder="Enter system ID"
                      class="w-full"
                      [class.ng-invalid]="isFieldInvalid('systemId')"
-                     />
+              />
               @if (isFieldInvalid('systemId')) {
                 <small class="p-error">System ID is required and must be numeric</small>
               }
@@ -73,13 +73,13 @@ import { NavigationUtils } from '../utils/navigation.utils';
           <!-- Username Field -->
           <div class="field">
             <label for="username" class="block text-900 font-medium mb-2">Username *</label>
-            <input pInputText 
+            <input pInputText
                    id="username"
                    formControlName="username"
                    placeholder="Enter your username"
                    class="w-full"
                    [class.ng-invalid]="isFieldInvalid('username')"
-                   />
+            />
             @if (isFieldInvalid('username')) {
               <small class="p-error">Username is required</small>
             }
@@ -94,7 +94,7 @@ import { NavigationUtils } from '../utils/navigation.utils';
                         [feedback]="false"
                         styleClass="w-full"
                         inputStyleClass="w-full"
-                       />
+            />
             @if (isFieldInvalid('password')) {
               <small class="p-error">Password is required</small>
             }
@@ -103,21 +103,21 @@ import { NavigationUtils } from '../utils/navigation.utils';
           <!-- Auto Login Checkbox -->
           <div class="field">
             <div class="flex align-items-center gap-2">
-              <p-checkbox inputId="autoLogin" 
-                          formControlName="autoLogin" 
-                          [binary]="true" />
+              <p-checkbox inputId="autoLogin"
+                          formControlName="autoLogin"
+                          [binary]="true"/>
               <label for="autoLogin" class="text-900">Remember me for automatic login</label>
             </div>
           </div>
 
           <!-- Submit Button -->
-          <p-button type="submit" 
+          <p-button type="submit"
                     label="Sign In"
                     icon="pi pi-sign-in"
                     [loading]="loading()"
                     [disabled]="loading()"
                     styleClass="w-full"
-                    size="large" />
+                    size="large"/>
         </form>
       </p-card>
     </div>
@@ -128,25 +128,27 @@ import { NavigationUtils } from '../utils/navigation.utils';
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
       }
-      
+
       .p-card .p-card-header {
         background: transparent;
         border-bottom: 1px solid #e9ecef;
       }
-      
+
       .p-inputtext:focus,
       .p-password-input:focus {
         border-color: #667eea;
         box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.2);
       }
-      
+
       .p-button {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
       }
-      
+
       .p-button:hover {
         background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        border: none;
+
       }
     }
   `]
@@ -173,7 +175,7 @@ export class LoginComponent implements OnDestroy {
   // ✅ Typed reactive form with proper validation
   readonly loginForm = this.fb.group({
     systemId: this.fb.control('', [
-      Validators.required, 
+      Validators.required,
       Validators.pattern('^[0-9]*$')
     ]),
     username: this.fb.control('', [Validators.required]),
@@ -188,7 +190,7 @@ export class LoginComponent implements OnDestroy {
     const systemIdFromURL = +this.route.snapshot.queryParams['systemId'];
     const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
     this.returnUrl.set(returnUrl);
-    
+
     if (systemIdFromURL > 0) {
       this.systemService.setSystemId(systemIdFromURL);
       this.loginForm.controls.systemId.setValue(systemIdFromURL.toString());
@@ -236,22 +238,18 @@ export class LoginComponent implements OnDestroy {
     }
 
     const formValue = this.loginForm.value;
-    
+
     // Use RxJS to get device ID and perform login
     this.systemService.getDeviceUniqueId$().pipe(
       tap(() => this.loading.set(true)),
       switchMap(deviceId => {
         const loginDetails: LoginDetails = {
-          systemId: Number(formValue.systemId),
+          systemId: formValue.systemId || '',
           userName: formValue.username || '',
           password: formValue.password || '',
-          versionNumber: '',
-          ipAddress: '',
-          macAddress: '',
-          cpuId: '',
           mainDiskSerialNumber: deviceId
         };
-        
+
         localStorage.setItem('systemId', loginDetails.systemId.toString());
         return this.performLogin(loginDetails);
       }),
@@ -281,12 +279,12 @@ export class LoginComponent implements OnDestroy {
         safeLoginDetails.password = '';
         safeLoginDetails.userName = '';
         this.systemService.setLoginDetails(safeLoginDetails, autoLogin);
-        this.systemService.setSystemId(loginDetails.systemId);
+        this.systemService.setSystemId(Number(loginDetails.systemId));
       }
 
       // Auth data is already set by completeLogin observable
       document.cookie = 'otot.systemId=' + loginDetails.systemId + ';';
-      
+
       this.messageService.add({
         severity: 'success',
         summary: 'Login Successful',
@@ -296,9 +294,9 @@ export class LoginComponent implements OnDestroy {
       // Navigate based on user role
       if (successfulLoginInfo.user?.personalData) {
         NavigationUtils.navigateToMainApp(
-          this.location, 
-          this.router, 
-          successfulLoginInfo.user.personalData.accountType, 
+          this.location,
+          this.router,
+          successfulLoginInfo.user.personalData.accountType,
           loginDetails.systemId
         );
       } else {
@@ -316,7 +314,7 @@ export class LoginComponent implements OnDestroy {
 
   private handleLoginFailure(error: any) {
     console.error('Failed to login:', error);
-    
+
     let errorMessage = 'Login failed. Please check your credentials.';
     if (error.status === 401) {
       errorMessage = 'Invalid username or password.';

@@ -86,7 +86,7 @@ export class UserService {
    */
   completeLogin(loginDetails: LoginDetails): Observable<SuccessfullLoginInfo> {
     return this.login(loginDetails).pipe(
-      switchMap(authResponse => 
+      switchMap(authResponse =>
         this.getMyUserInfo().pipe(
           map(userInfo => {
             // Update the auth response with user info
@@ -119,10 +119,10 @@ export class UserService {
     this._isConnectedAnonymously.set(false);
     return this.http.get<SuccessfullLoginInfo>('/api/loginWithDeviceId', {
       params: new HttpParams()
-        .append('systemId', loginDetails.systemId.toString())
+        .append('systemId', loginDetails.systemId)
         .append('fingerPrint', loginDetails.mainDiskSerialNumber)
     }).pipe(
-      switchMap(authResponse => 
+      switchMap(authResponse =>
         this.getMyUserInfo().pipe(
           map(userInfo => {
             const completeAuth = { ...authResponse, user: userInfo };
@@ -144,11 +144,10 @@ export class UserService {
     if (loginDetails.password) {
       httpParams = httpParams.append('verificationCode', loginDetails.password);
     }
-    httpParams = httpParams.append('systemId', loginDetails.systemId.toString());
+    httpParams = httpParams.append('systemId', loginDetails.systemId);
     httpParams = httpParams.append('fingerPrint', loginDetails.mainDiskSerialNumber);
     httpParams = httpParams.append('phoneNumber', loginDetails.userName);
-    httpParams = httpParams.append('personalId', loginDetails.versionNumber);
-    
+
     this._isConnectedAnonymously.set(false);
     return this.http.post<SuccessfullLoginInfo>('/api/loginByOTP', {}, { params: httpParams }).pipe(
       tap(response => this.authService.setAuthData(response))
@@ -182,7 +181,7 @@ export class UserService {
   setMyPersonalData(successfulLoginInfo: SuccessfullLoginInfo): Observable<SuccessfullLoginInfo> {
     // Update auth with token first
     this.authService.setAuthData(successfulLoginInfo);
-    
+
     return this.getMyUserInfo().pipe(
       tap(userInfo => {
         successfulLoginInfo.user = userInfo;

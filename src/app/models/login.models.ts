@@ -1,11 +1,7 @@
 export interface LoginDetails {
-  systemId: number;
+  systemId: string;
   userName: string;
   password: string;
-  versionNumber: string;
-  ipAddress: string;
-  macAddress: string;
-  cpuId: string;
   mainDiskSerialNumber: string;
 }
 

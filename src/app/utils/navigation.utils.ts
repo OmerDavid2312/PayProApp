@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { UserAccountTypes } from '../models/login.models';
 
 export class NavigationUtils {
-  static navigateToMainApp(location: Location, router: Router, accountType: UserAccountTypes, systemId?: number) {
+  static navigateToMainApp(location: Location, router: Router, accountType: UserAccountTypes, systemId?: string) {
     let newPath: string;
     
     switch (accountType) {
