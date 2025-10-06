@@ -66,6 +66,7 @@ export class LoginComponent implements OnDestroy {
     ]),
     username: this.fb.control('', [Validators.required]),
     password: this.fb.control('', [Validators.required]),
+    acceptTerms: this.fb.control(false, [Validators.requiredTrue]),
     autoLogin: this.fb.control(true)
   });
 
@@ -115,12 +116,11 @@ export class LoginComponent implements OnDestroy {
     this.submitted.set(true);
 
     if (this.loginForm.invalid) {
-      this.messageService.add({
+      return this.messageService.add({
         severity: 'error',
         summary: 'Form Error',
         detail: 'Please fill in all required fields correctly'
       });
-      return;
     }
 
     const formValue = this.loginForm.value;
@@ -215,5 +215,11 @@ export class LoginComponent implements OnDestroy {
       summary: 'Login Failed',
       detail: errorMessage
     });
+  }
+
+  // ✅ Handle forgot password click
+  onForgotPassword(): void {
+    console.log('Forgot password clicked');
+    // TODO: Implement forgot password functionality
   }
 }

@@ -19,9 +19,9 @@ const MyPreset = definePreset(Aura, {
         colorScheme: {
             light: {
                 primary: {
-                    color: '{blue.950}',
-                    hoverColor: '{blue.900}',
-                    activeColor: '{blue.800}'
+                    color: '{blue.600}',
+                    hoverColor: '{blue.800}',
+                    activeColor: '{blue.700}'
                 },
                 highlight: {
                     background: '{blue.950}',

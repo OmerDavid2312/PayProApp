@@ -1,13 +1,24 @@
-<div class="flex align-items-center justify-content-center min-h-screen p-6"
-     style="background: linear-gradient(135deg, #e3e8ff 0%, #98a5e1 100%);">
+<div class="flex align-items-center justify-content-center h-screen bg-primary-50 p-8">
 
   <p-toast></p-toast>
 
-  <p-card class="w-full max-w-md shadow-4 border-round-lg">
+  <p-card class="w-full max-w-md shadow-4 border-round-lg mx-8">
     <ng-template pTemplate="header">
       <div class="text-center py-4">
         <h1 class="text-3xl font-bold text-900 m-0">PayPro Login</h1>
         <p class="text-600 mt-2 mb-0">Welcome back! Please sign in to your account.</p>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <div class="text-center mt-2">
+        <p-button
+          type="button"
+          label="Forgot Password"
+          icon="pi pi-question-circle"
+          severity="secondary"
+          [text]="true"
+          (onClick)="onForgotPassword()"
+          styleClass="p-0"/>
       </div>
     </ng-template>
 
@@ -69,6 +80,21 @@
                       [binary]="true"/>
           <label for="autoLogin" class="text-900">Remember me for automatic login</label>
         </div>
+      </div>
+
+      <!-- Accept Terms (Required) -->
+      <div class="field">
+        <div class="flex align-items-center gap-2">
+          <p-checkbox inputId="acceptTerms"
+                      formControlName="acceptTerms"
+                      [binary]="true"></p-checkbox>
+          <label for="acceptTerms" class="text-900">
+            I accept the <a href="assets/terms.html" target="_blank" rel="noopener noreferrer">terms</a> *
+          </label>
+        </div>
+        @if (isFieldInvalid('acceptTerms')) {
+          <small class="p-error">You must accept the terms</small>
+        }
       </div>
 
       <!-- Submit Button -->
