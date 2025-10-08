@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Subject, takeUntil, switchMap, tap, catchError, of, finalize } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 // PrimeNG Imports
 import { ButtonModule } from 'primeng/button';
@@ -27,6 +28,7 @@ import { NavigationUtils } from '../utils/navigation.utils';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    TranslateModule,
     ButtonModule,
     InputTextModule,
     PasswordModule,

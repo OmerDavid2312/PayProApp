@@ -5,15 +5,15 @@
   <p-card class="w-full max-w-md shadow-4 border-round-lg mx-8">
     <ng-template pTemplate="header">
       <div class="text-center py-4">
-        <h1 class="text-3xl font-bold text-900 m-0">PayPro Login</h1>
-        <p class="text-600 mt-2 mb-0">Welcome back! Please sign in to your account.</p>
+        <h1 class="text-3xl font-bold text-900 m-0">{{ 'LOGIN.login_screen' | translate }}</h1>
+        <p class="text-600 mt-2 mb-0">{{ 'HOME.WELCOME_BACK' | translate }}!</p>
       </div>
     </ng-template>
     <ng-template pTemplate="footer">
       <div class="text-center mt-2">
         <p-button
           type="button"
-          label="Forgot Password"
+          [label]="'LOGIN.forgot_password' | translate"
           icon="pi pi-question-circle"
           severity="secondary"
           [text]="true"
@@ -27,48 +27,48 @@
       <!-- System ID Field -->
       @if (showSystemId()) {
         <div class="field">
-          <label for="systemId" class="block text-900 font-medium mb-2">System ID *</label>
+          <label for="systemId" class="block text-900 font-medium mb-2">{{ 'LOGIN.system_id' | translate }} *</label>
           <input pInputText
                  id="systemId"
                  type="number"
                  formControlName="systemId"
-                 placeholder="Enter system ID"
+                 [placeholder]="'LOGIN.system_id' | translate"
                  class="w-full"
                  [class.ng-invalid]="isFieldInvalid('systemId')"
           />
           @if (isFieldInvalid('systemId')) {
-            <small class="p-error">System ID is required and must be numeric</small>
+            <small class="p-error">{{ 'LOGIN.system_id_err' | translate }}</small>
           }
         </div>
       }
 
       <!-- Username Field -->
       <div class="field">
-        <label for="username" class="block text-900 font-medium mb-2">Username *</label>
+        <label for="username" class="block text-900 font-medium mb-2">{{ 'LOGIN.user_name' | translate }} *</label>
         <input pInputText
                id="username"
                formControlName="username"
-               placeholder="Enter your username"
+               [placeholder]="'LOGIN.user_name' | translate"
                class="w-full"
                [class.ng-invalid]="isFieldInvalid('username')"
         />
         @if (isFieldInvalid('username')) {
-          <small class="p-error">Username is required</small>
+          <small class="p-error">{{ 'LOGIN.username_err' | translate }}</small>
         }
       </div>
 
       <!-- Password Field -->
       <div class="field">
-        <label for="password" class="block text-900 font-medium mb-2">Password *</label>
+        <label for="password" class="block text-900 font-medium mb-2">{{ 'LOGIN.pass' | translate }} *</label>
         <p-password formControlName="password"
-                    placeholder="Enter your password"
+                    [placeholder]="'LOGIN.pass' | translate"
                     [toggleMask]="true"
                     [feedback]="false"
                     styleClass="w-full"
                     inputStyleClass="w-full"
         />
         @if (isFieldInvalid('password')) {
-          <small class="p-error">Password is required</small>
+          <small class="p-error">{{ 'LOGIN.pass_err' | translate }}</small>
         }
       </div>
 
@@ -78,7 +78,7 @@
           <p-checkbox inputId="autoLogin"
                       formControlName="autoLogin"
                       [binary]="true"/>
-          <label for="autoLogin" class="text-900">Remember me for automatic login</label>
+          <label for="autoLogin" class="text-900">{{ 'LOGIN.login_automatically' | translate }}</label>
         </div>
       </div>
 
@@ -99,7 +99,7 @@
 
       <!-- Submit Button -->
       <p-button type="submit"
-                label="Sign In"
+                [label]="'LOGIN.enter' | translate"
                 icon="pi pi-sign-in"
                 [loading]="loading()"
                 [disabled]="loading()"
