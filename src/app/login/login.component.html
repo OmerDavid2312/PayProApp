@@ -14,7 +14,6 @@
         <p-button
           type="button"
           [label]="'LOGIN.forgot_password' | translate"
-          icon="pi pi-question-circle"
           severity="secondary"
           [text]="true"
           (onClick)="onForgotPassword()"
@@ -36,9 +35,11 @@
                  class="w-full"
                  [class.ng-invalid]="isFieldInvalid('systemId')"
           />
-          @if (isFieldInvalid('systemId')) {
-            <small class="p-error">{{ 'LOGIN.system_id_err' | translate }}</small>
-          }
+          <div class="h-1rem mt-1">
+            @if (isFieldInvalid('systemId')) {
+              <small class="p-error">{{ 'LOGIN.system_id_err' | translate }}</small>
+            }
+          </div>
         </div>
       }
 
@@ -52,9 +53,11 @@
                class="w-full"
                [class.ng-invalid]="isFieldInvalid('username')"
         />
-        @if (isFieldInvalid('username')) {
-          <small class="p-error">{{ 'LOGIN.username_err' | translate }}</small>
-        }
+        <div class="h-1rem mt-1">
+          @if (isFieldInvalid('username')) {
+            <small class="p-error">{{ 'LOGIN.username_err' | translate }}</small>
+          }
+        </div>
       </div>
 
       <!-- Password Field -->
@@ -67,18 +70,10 @@
                     styleClass="w-full"
                     inputStyleClass="w-full"
         />
-        @if (isFieldInvalid('password')) {
-          <small class="p-error">{{ 'LOGIN.pass_err' | translate }}</small>
-        }
-      </div>
-
-      <!-- Auto Login Checkbox -->
-      <div class="field">
-        <div class="flex align-items-center gap-2">
-          <p-checkbox inputId="autoLogin"
-                      formControlName="autoLogin"
-                      [binary]="true"/>
-          <label for="autoLogin" class="text-900">{{ 'LOGIN.login_automatically' | translate }}</label>
+        <div class="h-1rem mt-1">
+          @if (isFieldInvalid('password')) {
+            <small class="p-error">{{ 'LOGIN.pass_err' | translate }}</small>
+          }
         </div>
       </div>
 
@@ -92,9 +87,21 @@
             I accept the <a href="assets/terms.html" target="_blank" rel="noopener noreferrer">terms</a> *
           </label>
         </div>
-        @if (isFieldInvalid('acceptTerms')) {
-          <small class="p-error">You must accept the terms</small>
-        }
+        <div class="h-1rem mt-1">
+          @if (isFieldInvalid('acceptTerms')) {
+            <small class="p-error">You must accept the terms</small>
+          }
+        </div>
+      </div>
+
+       <!-- Auto Login Checkbox -->
+      <div class="field">
+        <div class="flex align-items-center gap-2">
+          <p-checkbox inputId="autoLogin"
+                      formControlName="autoLogin"
+                      [binary]="true"/>
+          <label for="autoLogin" class="text-900">{{ 'LOGIN.login_automatically' | translate }}</label>
+        </div>
       </div>
 
       <!-- Submit Button -->
@@ -102,9 +109,96 @@
                 [label]="'LOGIN.enter' | translate"
                 icon="pi pi-sign-in"
                 [loading]="loading()"
-                [disabled]="loading()"
+                [disabled]="loading() || loginForm.invalid"
                 styleClass="w-full"
                 size="large"/>
     </form>
   </p-card>
+
+  <!-- Forgot Password Dialog -->
+  <p-dialog 
+    [header]="'LOGIN.forgot_password' | translate"
+    [visible]="showForgotPasswordDialog()"
+    (visibleChange)="showForgotPasswordDialog.set($event)"
+    [modal]="true"
+    [style]="{width: '450px'}"
+    [draggable]="false"
+    [resizable]="false">
+    
+    <form [formGroup]="forgotPasswordForm" (ngSubmit)="onSubmitForgotPassword()" class="flex flex-column gap-4">
+      <!-- System ID Field -->
+      <div class="field">
+        <label for="forgotSystemId" class="block text-900 font-medium mb-2">{{ 'LOGIN.system_id' | translate }} *</label>
+        <input pInputText
+               id="forgotSystemId"
+               type="number"
+               formControlName="systemId"
+               [placeholder]="'LOGIN.system_id' | translate"
+               class="w-full"
+        />
+      </div>
+
+      <!-- Send Reset To Selection -->
+      <div class="field">
+        <label class="block text-900 font-medium mb-3">Send password reset to: *</label>
+        <div class="flex gap-4">
+          <div class="flex align-items-center">
+            <p-radioButton name="resetMethod" 
+                          value="email" 
+                          formControlName="resetMethod"
+                          inputId="resetEmail" />
+            <label for="resetEmail" class="ml-2 text-900">Email</label>
+          </div>
+          <div class="flex align-items-center">
+            <p-radioButton name="resetMethod" 
+                          value="mobile" 
+                          formControlName="resetMethod"
+                          inputId="resetMobile" />
+            <label for="resetMobile" class="ml-2 text-900">Mobile</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Email Field -->
+      @if (forgotPasswordForm.get('resetMethod')?.value === 'email') {
+        <div class="field">
+          <label for="forgotEmail" class="block text-900 font-medium mb-2">Email Address *</label>
+          <input pInputText
+                 id="forgotEmail"
+                 type="email"
+                 formControlName="email"
+                 placeholder="Enter your email address"
+                 class="w-full"
+          />
+        </div>
+      }
+
+      <!-- Mobile Field -->
+      @if (forgotPasswordForm.get('resetMethod')?.value === 'mobile') {
+        <div class="field">
+          <label for="forgotMobile" class="block text-900 font-medium mb-2">Mobile Number *</label>
+          <input pInputText
+                 id="forgotMobile"
+                 type="tel"
+                 formControlName="mobile"
+                 placeholder="Enter your mobile number"
+                 class="w-full"
+          />
+        </div>
+      }
+
+      <div class="flex justify-content-end gap-2">
+        <p-button 
+          type="button"
+          label="Cancel" 
+          severity="secondary"
+          (onClick)="onCancelForgotPassword()" />
+        <p-button 
+          type="submit"
+          label="Submit"
+          [disabled]="forgotPasswordForm.invalid"
+          [loading]="forgotPasswordLoading()" />
+      </div>
+    </form>
+  </p-dialog>
 </div>

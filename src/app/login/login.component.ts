@@ -13,6 +13,8 @@ import { PasswordModule } from 'primeng/password';
 import { CheckboxModule } from 'primeng/checkbox';
 import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
+import { DialogModule } from 'primeng/dialog';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { MessageService } from 'primeng/api';
 
 // Services and Models
@@ -34,7 +36,9 @@ import { NavigationUtils } from '../utils/navigation.utils';
     PasswordModule,
     CheckboxModule,
     CardModule,
-    ToastModule
+    ToastModule,
+    DialogModule,
+    RadioButtonModule
   ],
   providers: [MessageService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -59,6 +63,8 @@ export class LoginComponent implements OnDestroy {
   readonly submitted = signal(false);
   readonly showSystemId = signal(true);
   readonly returnUrl = signal('/dashboard');
+  readonly showForgotPasswordDialog = signal(false);
+  readonly forgotPasswordLoading = signal(false);
 
   // ✅ Typed reactive form with proper validation
   readonly loginForm = this.fb.group({
@@ -72,7 +78,16 @@ export class LoginComponent implements OnDestroy {
     autoLogin: this.fb.control(true)
   });
 
-  // ✅ Computed signals for derived state
+  // ✅ Forgot password form with email/mobile selection
+  readonly forgotPasswordForm = this.fb.group({
+    systemId: this.fb.control('', [
+      Validators.required,
+      Validators.pattern('^[0-9]*$')
+    ]),
+    resetMethod: this.fb.control<'email' | 'mobile' | ''>('email', [Validators.required]),
+    email: this.fb.control('', [Validators.required, Validators.email]),
+    mobile: this.fb.control('')
+  });
 
   ngOnInit() {
     // Get system ID from URL parameters
@@ -100,6 +115,30 @@ export class LoginComponent implements OnDestroy {
     ).subscribe(() => {
       console.log('Form value changed:', this.loginForm.value);
       console.log('Form valid:', this.loginForm.valid);
+    });
+
+    // Subscribe to reset method changes to update validators
+    this.forgotPasswordForm.get('resetMethod')?.valueChanges.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(method => {
+      const emailControl = this.forgotPasswordForm.get('email');
+      const mobileControl = this.forgotPasswordForm.get('mobile');
+
+      if (method === 'email') {
+        emailControl?.setValidators([Validators.required, Validators.email]);
+        mobileControl?.clearValidators();
+        mobileControl?.setValue('');
+      } else if (method === 'mobile') {
+        mobileControl?.setValidators([Validators.required]);
+        emailControl?.clearValidators();
+        emailControl?.setValue('');
+      } else {
+        emailControl?.clearValidators();
+        mobileControl?.clearValidators();
+      }
+
+      emailControl?.updateValueAndValidity();
+      mobileControl?.updateValueAndValidity();
     });
   }
 
@@ -135,6 +174,7 @@ export class LoginComponent implements OnDestroy {
           systemId: formValue.systemId || '',
           userName: formValue.username || '',
           password: formValue.password || '',
+          // mainDiskSerialNumber: "OKEYadb6f4e763357d5df4c94e53a9ecceb31754931880238"
           mainDiskSerialNumber: deviceId
         };
 
@@ -221,7 +261,50 @@ export class LoginComponent implements OnDestroy {
 
   // ✅ Handle forgot password click
   onForgotPassword(): void {
-    console.log('Forgot password clicked');
-    // TODO: Implement forgot password functionality
+    // Pre-fill system ID from login form if available
+    const currentSystemId = this.loginForm.get('systemId')?.value;
+    if (currentSystemId) {
+      this.forgotPasswordForm.patchValue({
+        systemId: currentSystemId
+      });
+    }
+    this.showForgotPasswordDialog.set(true);
+  }
+
+  // ✅ Handle forgot password form submission
+  onSubmitForgotPassword(): void {
+    if (this.forgotPasswordForm.invalid) {
+      return;
+    }
+
+    this.forgotPasswordLoading.set(true);
+    const formValue = this.forgotPasswordForm.value;
+    const resetMethod = formValue.resetMethod;
+
+    // TODO: MOCK Call API to send password reset instructions
+    setTimeout(() => {
+      const destination = resetMethod === 'email'
+        ? 'your email address'
+        : 'your mobile number';
+
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Request Sent',
+        detail: `Password reset instructions have been sent to ${destination}.`
+      });
+      this.forgotPasswordLoading.set(false);
+      this.showForgotPasswordDialog.set(false);
+      this.forgotPasswordForm.reset({
+        resetMethod: 'email'
+      });
+    }, 1500);
+  }
+
+  // ✅ Handle dialog cancellation
+  onCancelForgotPassword(): void {
+    this.showForgotPasswordDialog.set(false);
+    this.forgotPasswordForm.reset({
+      resetMethod: 'email'
+    });
   }
 }

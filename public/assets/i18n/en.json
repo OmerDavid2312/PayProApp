@@ -6,7 +6,7 @@
   "LOGIN": {
     "login_screen": "PayPro Login",
     "enter": "Enter",
-    "system_id": "System umber",
+    "system_id": "System number",
     "user_name": "Username",
     "pass": "Password",
     "system_id_err": "Please insert system's number",
