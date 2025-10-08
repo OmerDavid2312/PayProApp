@@ -1,25 +1,8 @@
-::ng-deep {
-  .p-card {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-  }
-
-  .p-card .p-card-header {
-    background: transparent;
-    border-bottom: 1px solid #e9ecef;
-  }
-
-  .p-inputtext:focus,
-  .p-password-input:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.2);
-  }
-
-  .p-button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  }
-
-  .p-button:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-  }
+:host {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
