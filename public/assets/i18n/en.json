@@ -14,7 +14,17 @@
     "pass_err": "Please insert password",
     "forgot_password": "forgot password?",
     "login_automatically": "Login automatically",
-    "we_are_experiencing_troubles_login_do_you_want_to_retry": "We are experiencing trouble with login, do you want to try again?"
+    "we_are_experiencing_troubles_login_do_you_want_to_retry": "We are experiencing trouble with login, do you want to try again?",
+    "cancel": "Cancel",
+    "send": "Send",
+    "send_password_reset_to": "Send password reset to:",
+    "email": "Email",
+    "mobile": "Mobile",
+    "email_address": "Email Address",
+    "enter_email_address": "Enter your email address",
+    "mobile_number": "Mobile Number",
+    "enter_mobile_number": "Enter your mobile number",
+    "submit": "Submit"
   },
   "HOME": {
     "WELCOME_BACK": "Welcome back! Please sign in to your account.",

@@ -8,8 +8,22 @@
     "system_id": "Системный номер",
     "user_name": "Логин",
     "pass": "Пароль",
+    "system_id_err": "Пожалуйста, введите системный номер",
+    "username_err": "Пожалуйста, введите логин",
+    "pass_err": "Пожалуйста, введите пароль",
+    "forgot_password": "забыли пароль?",
     "login_automatically": "Войти автоматически",
-    "we_are_experiencing_troubles_login_do_you_want_to_retry": "У нас возникли проблемы со входом в систему, хотите попробовать еще раз?"
+    "we_are_experiencing_troubles_login_do_you_want_to_retry": "У нас возникли проблемы со входом в систему, хотите попробовать еще раз?",
+    "cancel": "Отмена",
+    "send": "отправлять",
+    "send_password_reset_to": "Отправить сброс пароля на:",
+    "email": "Электронная почта",
+    "mobile": "Мобильный",
+    "email_address": "Адрес электронной почты",
+    "enter_email_address": "Введите свой адрес электронной почты",
+    "mobile_number": "Номер мобильного телефона",
+    "enter_mobile_number": "Введите свой номер мобильного телефона",
+    "submit": "Отправить"
   },
   "HOME": {
     "WELCOME_BACK": "Добро пожаловать",

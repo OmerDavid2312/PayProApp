@@ -14,7 +14,17 @@
     "pass_err": "נא להזין סיסמא",
     "forgot_password":"שכחתי סיסמא?",
     "login_automatically": "התחבר אוטומטית",
-    "we_are_experiencing_troubles_login_do_you_want_to_retry": "אנו חווים בעיות התחברות, לנסות שוב?"
+    "we_are_experiencing_troubles_login_do_you_want_to_retry": "אנו חווים בעיות התחברות, לנסות שוב?",
+    "cancel": "ביטול",
+    "send": "שלח",
+    "send_password_reset_to": "שלח איפוס סיסמא ל:",
+    "email": "אימייל",
+    "mobile": "נייד",
+    "email_address": "כתובת אימייל",
+    "enter_email_address": "הזן כתובת אימייל",
+    "mobile_number": "מספר נייד",
+    "enter_mobile_number": "הזן מספר נייד",
+    "submit": "שלח"
   },
   "HOME": {
     "WELCOME_BACK": "ברוך שובך",

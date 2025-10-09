@@ -8,8 +8,22 @@
     "system_id": "رمز الدخول للنظام",
     "user_name": "اسم المستخدم",
     "pass": "كلمة المرور",
+    "system_id_err": "الرجاء إدخال رقم النظام",
+    "username_err": "الرجاء إدخال اسم المستخدم",
+    "pass_err": "الرجاء إدخال كلمة المرور",
+    "forgot_password": "هل نسيت كلمة المرور؟",
     "login_automatically": "تسجيل الدخول تلقائيا",
-    "we_are_experiencing_troubles_login_do_you_want_to_retry": " نواجه مشكلة في تسجيل الدخول الان, هل تريد المحاولة مره اخري؟"
+    "we_are_experiencing_troubles_login_do_you_want_to_retry": " نواجه مشكلة في تسجيل الدخول الان, هل تريد المحاولة مره اخري؟",
+    "cancel": "يلغي",
+    "send": "يرسل",
+    "send_password_reset_to": "إرسال إعادة تعيين كلمة المرور إلى:",
+    "email": "البريد الإلكتروني",
+    "mobile": "الجوال",
+    "email_address": "عنوان البريد الإلكتروني",
+    "enter_email_address": "أدخل عنوان بريدك الإلكتروني",
+    "mobile_number": "رقم الجوال",
+    "enter_mobile_number": "أدخل رقم جوالك",
+    "submit": "إرسال"
   },
   "HOME": {
     "WELCOME_BACK": "مرحبا بعودتك",
