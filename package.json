@@ -31,6 +31,7 @@
     "@angular/localize": "^20.3.0",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "@fingerprintjs/fingerprintjs": "^4.6.2",
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
     "@primeng/themes": "^20.1.2",
