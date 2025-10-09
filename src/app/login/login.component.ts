@@ -250,6 +250,9 @@ export class LoginComponent implements OnDestroy {
       errorMessage = 'Access denied. Please contact administrator.';
     } else if (error.status >= 500) {
       errorMessage = 'Server error. Please try again later.';
+      if (error.error.errorCode == 1010) {
+        errorMessage = 'Wrong username or password';
+      }
     }
 
     this.messageService.add({
