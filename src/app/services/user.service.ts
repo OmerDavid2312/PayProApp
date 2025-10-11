@@ -171,7 +171,7 @@ export class UserService {
   }
 
   getMyUserInfo(): Observable<BasicUser> {
-    return this.http.get<BasicUser>('/api/getMyUserInfo');
+    return this.http.post<BasicUser>('/smartClub/rest/authorizedUsersManagement/getMyUserInfo', {});
   }
 
   /**

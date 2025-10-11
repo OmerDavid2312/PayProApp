@@ -174,7 +174,6 @@ export class LoginComponent implements OnDestroy {
           systemId: formValue.systemId || '',
           userName: formValue.username || '',
           password: formValue.password || '',
-          // mainDiskSerialNumber: "OKEYadb6f4e763357d5df4c94e53a9ecceb31754931880238"
           mainDiskSerialNumber: deviceId
         };
 
