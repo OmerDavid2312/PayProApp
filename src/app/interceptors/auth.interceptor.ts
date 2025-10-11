@@ -7,15 +7,14 @@ import { AuthService } from '../services/auth.service';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  
+
   const authData = authService.getAuthData();
-  
+
   // Add authorization header if token exists
-  if (authData && authData.token) {
+  if (authData?.token) {
     req = req.clone({
       setHeaders: {
-        Authorization: `Bearer ${authData.token}`,
-        [authService.TOKEN_HEADER_NAME]: authData.token
+        [authService.TOKEN_HEADER_NAME]: JSON.stringify({token:authData.token})
       }
     });
   }
