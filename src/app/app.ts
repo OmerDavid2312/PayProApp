@@ -43,6 +43,8 @@ import { DrawerModule } from 'primeng/drawer';
 export class App {
   private readonly translate = inject(TranslateService);
   protected readonly title = signal('Ticket Admin Dashboard');
+  protected readonly isRtl = signal(false);
+  protected readonly currentLang = signal('en');
 
   constructor() {
     // Set the default language
@@ -52,6 +54,20 @@ export class App {
     const supportedLangs = ['en', 'he', 'ar', 'ru'];
     const langToUse = browserLang && supportedLangs.includes(browserLang) ? browserLang : 'en';
     this.translate.use(langToUse);
+    this.currentLang.set(langToUse);
+    this.updateDirection(langToUse);
+
+    // Subscribe to language changes
+    this.translate.onLangChange.subscribe((event) => {
+      this.currentLang.set(event.lang);
+      this.updateDirection(event.lang);
+    });
+  }
+
+  private updateDirection(lang: string): void {
+    // RTL languages: Hebrew and Arabic
+    const rtlLanguages = ['he', 'ar'];
+    this.isRtl.set(rtlLanguages.includes(lang));
   }
 
 
