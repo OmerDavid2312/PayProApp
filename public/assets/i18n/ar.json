@@ -22,8 +22,19 @@
     "email_address": "عنوان البريد الإلكتروني",
     "enter_email_address": "أدخل عنوان بريدك الإلكتروني",
     "mobile_number": "رقم الجوال",
-    "enter_mobile_number": "أدخل رقم جوالك",
-    "submit": "إرسال"
+    "enter_mobile_number": "أدخل رقم الجوال الخاص بك",
+    "submit": "إرسال",
+    "accept_terms": "أوافق على",
+    "terms": "الشروط",
+    "must_accept_terms": "يجب عليك قبول الشروط",
+    "errors": {
+      "login_failed": "فشل تسجيل الدخول",
+      "login_failed_check_credentials": "فشل تسجيل الدخول. يرجى التحقق من بيانات الاعتماد الخاصة بك.",
+      "invalid_username_password": "اسم المستخدم أو كلمة المرور غير صحيحة.",
+      "access_denied": "تم رفض الوصول. يرجى الاتصال بالمسؤول.",
+      "server_error": "خطأ في الخادم. يرجى المحاولة مرة أخرى لاحقاً.",
+      "wrong_username_password": "اسم المستخدم أو كلمة المرور خاطئة"
+    }
   },
   "HOME": {
     "WELCOME_BACK": "مرحبا بعودتك",

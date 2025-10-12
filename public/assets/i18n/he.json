@@ -23,8 +23,19 @@
     "email_address": "כתובת אימייל",
     "enter_email_address": "הזן כתובת אימייל",
     "mobile_number": "מספר נייד",
-    "enter_mobile_number": "הזן מספר נייד",
-    "submit": "שלח"
+    "enter_mobile_number": "הזן את מספר הנייד שלך",
+    "submit": "שלח",
+    "accept_terms": "אני מאשר כי קראתי ואישרתי את",
+    "terms": "התנאים",
+    "must_accept_terms": "עליך לקבל את התנאים",
+    "errors": {
+      "login_failed": "התחברות נכשלה",
+      "login_failed_check_credentials": "ההתחברות נכשלה. אנא בדוק את פרטי ההתחברות שלך.",
+      "invalid_username_password": "שם משתמש או סיסמה שגויים.",
+      "access_denied": "הגישה נדחתה. אנא צור קשר עם מנהל המערכת.",
+      "server_error": "שגיאת שרת. אנא נסה שוב מאוחר יותר.",
+      "wrong_username_password": "שם משתמש או סיסמה שגויים"
+    }
   },
   "HOME": {
     "WELCOME_BACK": "ברוך שובך",

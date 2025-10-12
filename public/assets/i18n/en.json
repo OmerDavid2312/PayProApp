@@ -24,7 +24,18 @@
     "enter_email_address": "Enter your email address",
     "mobile_number": "Mobile Number",
     "enter_mobile_number": "Enter your mobile number",
-    "submit": "Submit"
+    "submit": "Submit",
+    "accept_terms": "I accept the",
+    "terms": "terms",
+    "must_accept_terms": "You must accept the terms",
+    "errors": {
+      "login_failed": "Login Failed",
+      "login_failed_check_credentials": "Login failed. Please check your credentials.",
+      "invalid_username_password": "Invalid username or password.",
+      "access_denied": "Access denied. Please contact administrator.",
+      "server_error": "Server error. Please try again later.",
+      "wrong_username_password": "Wrong username or password"
+    }
   },
   "HOME": {
     "WELCOME_BACK": "Welcome back! Please sign in to your account",

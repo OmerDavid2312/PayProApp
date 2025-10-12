@@ -84,12 +84,12 @@
                       formControlName="acceptTerms"
                       [binary]="true"></p-checkbox>
           <label for="acceptTerms" class="text-900">
-            I accept the <a href="assets/terms.html" target="_blank" rel="noopener noreferrer">terms</a> *
+            {{ 'LOGIN.accept_terms' | translate }} <a href="assets/terms.html" target="_blank" rel="noopener noreferrer">{{ 'LOGIN.terms' | translate }}</a> *
           </label>
         </div>
         <div class="h-1rem mt-1">
           @if (isFieldInvalid('acceptTerms')) {
-            <small class="p-error">You must accept the terms</small>
+            <small class="p-error">{{ 'LOGIN.must_accept_terms' | translate }}</small>
           }
         </div>
       </div>

@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Subject, takeUntil, switchMap, tap, catchError, of, finalize } from 'rxjs';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // PrimeNG Imports
 import { ButtonModule } from 'primeng/button';
@@ -57,6 +57,7 @@ export class LoginComponent implements OnDestroy {
   private readonly userService = inject(UserService);
   private readonly systemService = inject(SystemService);
   private readonly messageService = inject(MessageService);
+  private readonly translate = inject(TranslateService);
 
   @ViewChild('recaptcha', { static: true }) recaptchaElement!: ElementRef;
 
@@ -257,22 +258,22 @@ export class LoginComponent implements OnDestroy {
   private handleLoginFailure(error: any) {
     console.error('Failed to login:', error);
 
-    let errorMessage = 'Login failed. Please check your credentials.';
+    let errorMessageKey = 'LOGIN.errors.login_failed_check_credentials';
     if (error.status === 401) {
-      errorMessage = 'Invalid username or password.';
+      errorMessageKey = 'LOGIN.errors.invalid_username_password';
     } else if (error.status === 403) {
-      errorMessage = 'Access denied. Please contact administrator.';
+      errorMessageKey = 'LOGIN.errors.access_denied';
     } else if (error.status >= 500) {
-      errorMessage = 'Server error. Please try again later.';
+      errorMessageKey = 'LOGIN.errors.server_error';
       if (error.error.errorCode == 1010) {
-        errorMessage = 'Wrong username or password';
+        errorMessageKey = 'LOGIN.errors.wrong_username_password';
       }
     }
 
     this.messageService.add({
       severity: 'error',
-      summary: 'Login Failed',
-      detail: errorMessage
+      summary: this.translate.instant('LOGIN.errors.login_failed'),
+      detail: this.translate.instant(errorMessageKey)
     });
   }
 
