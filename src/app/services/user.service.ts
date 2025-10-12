@@ -175,6 +175,20 @@ export class UserService {
   }
 
   /**
+   * Send forgot password link
+   * @param systemId - System ID
+   * @param messagingMethodType - 0 for mobile, 1 for email
+   * @param destination - Email address or mobile number
+   */
+  sendForgotPasswordLink(systemId: string, messagingMethodType: number, destination: string): Observable<any> {
+    return this.http.post('/smartClub/rest/authorizedUsersManagement/sendForgotPasswordLinkForApp', {
+      systemId,
+      messagingMethodType,
+      destination
+    });
+  }
+
+  /**
    * Update personal data using RxJS streams
    * Returns an observable for the complete operation
    */

@@ -299,23 +299,39 @@ export class LoginComponent implements OnDestroy {
     const formValue = this.forgotPasswordForm.value;
     const resetMethod = formValue.resetMethod;
 
-    // TODO: MOCK Call API to send password reset instructions
-    setTimeout(() => {
-      const destination = resetMethod === 'email'
-        ? 'your email address'
-        : 'your mobile number';
+    const messagingMethodType = formValue.resetMethod === 'email' ? 1 : 0;
+    const destination = (formValue.email || formValue.mobile) ?? '';
+    const systemId = formValue.systemId ?? '';
 
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Request Sent',
-        detail: `Password reset instructions have been sent to ${destination}.`
-      });
-      this.forgotPasswordLoading.set(false);
-      this.showForgotPasswordDialog.set(false);
-      this.forgotPasswordForm.reset({
-        resetMethod: 'email'
-      });
-    }, 1500);
+    this.userService.sendForgotPasswordLink(systemId, messagingMethodType, destination).pipe(
+      takeUntil(this.destroy$),
+      tap(() => {
+        const destinationType = resetMethod === 'email'
+          ? 'your email address'
+          : 'your mobile number';
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Request Sent',
+          detail: `Password reset instructions have been sent to ${destinationType}.`
+        });
+        this.showForgotPasswordDialog.set(false);
+        this.forgotPasswordForm.reset({
+          resetMethod: 'email'
+        });
+        this.showForgotPasswordDialog.set(false);
+      }),
+      catchError(error => {
+        console.error('Failed to send password reset:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Request Failed',
+          detail: 'Failed to send password reset instructions. Please try again.'
+        });
+        return of(null);
+      }),
+      finalize(() => this.forgotPasswordLoading.set(false))
+    ).subscribe();
   }
 
   // ✅ Handle dialog cancellation
