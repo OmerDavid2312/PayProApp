@@ -104,12 +104,17 @@
         </div>
       </div>
 
+      <!-- CAPTCHA -->
+      <div class="field">
+        <div class="flex justify-content-center" #recaptcha></div>
+      </div>
+
       <!-- Submit Button -->
       <p-button type="submit"
                 [label]="'LOGIN.enter' | translate"
                 icon="pi pi-sign-in"
                 [loading]="loading()"
-                [disabled]="loading() || loginForm.invalid"
+                [disabled]="!captchaVerified() || loginForm.invalid"
                 styleClass="w-full"
                 size="large"/>
     </form>

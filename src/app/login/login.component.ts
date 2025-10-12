@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -58,7 +58,11 @@ export class LoginComponent implements OnDestroy {
   private readonly systemService = inject(SystemService);
   private readonly messageService = inject(MessageService);
 
+  @ViewChild('recaptcha', { static: true }) recaptchaElement!: ElementRef;
+
   // ✅ Using signals for reactive state
+  readonly captchaVerified = signal(false);
+  readonly captchaToken = signal<string | null>(null);
   readonly loading = signal(false);
   readonly submitted = signal(false);
   readonly showSystemId = signal(true);
@@ -99,6 +103,8 @@ export class LoginComponent implements OnDestroy {
       this.systemService.setSystemId(systemIdFromURL);
       this.loginForm.controls.systemId.setValue(systemIdFromURL.toString());
     }
+
+    this.addRecaptchaScript();
 
     // Load saved login details if available
     const savedLoginDetails = this.systemService.getLoginDetails();
@@ -155,6 +161,15 @@ export class LoginComponent implements OnDestroy {
 
   onSubmit() {
     this.submitted.set(true);
+
+    // ✅ Validate CAPTCHA first
+    if (!this.captchaVerified()) {
+      return this.messageService.add({
+        severity: 'error',
+        summary: 'CAPTCHA Required',
+        detail: 'Please complete the CAPTCHA verification'
+      });
+    }
 
     if (this.loginForm.invalid) {
       return this.messageService.add({
@@ -307,6 +322,46 @@ export class LoginComponent implements OnDestroy {
     this.showForgotPasswordDialog.set(false);
     this.forgotPasswordForm.reset({
       resetMethod: 'email'
+    });
+  }
+
+  addRecaptchaScript() {
+    (window as any).grecaptchaCallback = () => {
+      this.renderReCaptcha();
+    }
+
+    (function (d, s, id) {
+      const fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {
+        return;
+      }
+      const js = d.createElement(s) as HTMLScriptElement;
+      js.id = id;
+      js.src = 'https://www.google.com/recaptcha/api.js?onload=grecaptchaCallback&render=explicit';
+      if (fjs && fjs.parentNode) {
+        fjs.parentNode.insertBefore(js, fjs);
+      }
+    }(document, 'script', 'recaptcha-jssdk'));
+  }
+
+  renderReCaptcha() {
+    (window as any).grecaptcha.render(this.recaptchaElement.nativeElement, {
+      'sitekey': '6LcwJIsfAAAAAD4a5e0NC6eiaFuEWOywyYziLsQz',
+      'callback': (response: string) => {
+        console.log('CAPTCHA verified successfully');
+        this.captchaVerified.set(true);
+        this.captchaToken.set(response);
+      },
+      'expired-callback': () => {
+        console.log('CAPTCHA expired');
+        this.captchaVerified.set(false);
+        this.captchaToken.set(null);
+      },
+      'error-callback': () => {
+        console.log('CAPTCHA error');
+        this.captchaVerified.set(false);
+        this.captchaToken.set(null);
+      }
     });
   }
 }
