@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 
 // PrimeNG Modules
 import { InputTextModule } from 'primeng/inputtext';
@@ -40,9 +41,36 @@ import { DrawerModule } from 'primeng/drawer';
   styleUrl: './app.scss'
 })
 export class App {
+  private readonly translate = inject(TranslateService);
   protected readonly title = signal('Ticket Admin Dashboard');
-  
-  
+  protected readonly isRtl = signal(false);
+  protected readonly currentLang = signal('en');
+
+  constructor() {
+    // Set the default language
+    this.translate.setDefaultLang('en');
+    // Use browser language if available, otherwise default to English
+    const browserLang = this.translate.getBrowserLang();
+    const supportedLangs = ['en', 'he', 'ar', 'ru'];
+    const langToUse = browserLang && supportedLangs.includes(browserLang) ? browserLang : 'en';
+    this.translate.use(langToUse);
+    this.currentLang.set(langToUse);
+    this.updateDirection(langToUse);
+
+    // Subscribe to language changes
+    this.translate.onLangChange.subscribe((event) => {
+      this.currentLang.set(event.lang);
+      this.updateDirection(event.lang);
+    });
+  }
+
+  private updateDirection(lang: string): void {
+    // RTL languages: Hebrew and Arabic
+    const rtlLanguages = ['he', 'ar'];
+    this.isRtl.set(rtlLanguages.includes(lang));
+  }
+
+
   // Sample data for components
   selectedCity: any = null;
   cities = [
@@ -52,15 +80,15 @@ export class App {
     { name: 'Critical', code: 'CRIT' },
     { name: 'Resolved', code: 'RES' }
   ];
-  
+
   selectedDate: Date | null = null;
   checked: boolean = false;
-  
+
   activeIndex: number = 0;
-  
+
   sidebarVisible: boolean = false;
-  
-  
+
+
   items = [
     {
       label: 'Dashboard',
@@ -102,4 +130,3 @@ export class App {
     }
   ];
 }
-
