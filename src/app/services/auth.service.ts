@@ -133,9 +133,4 @@ export class AuthService {
     this._loginDetails.set(null);
     localStorage.removeItem(this.LOGIN_DETAILS_LOCAL_STORAGE_KEY);
   }
-
-  // Legacy method for backward compatibility
-  isAuthenticatedLegacy(): boolean {
-    return this.isAuthenticated();
-  }
 }
