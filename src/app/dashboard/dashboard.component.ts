@@ -1,15 +1,35 @@
-import { Component, inject, computed, effect, OnDestroy } from '@angular/core';
+import { Component, inject, computed, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+
+// PrimeNG Components
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
+
+// Services
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
-import { Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+
+// Models
 import { SuccessfullLoginInfo, BasicUser, UserAccountTypes, AuthorizationLevel } from '../models/login.models';
+
+// RxJS
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
+  standalone: true,
+  imports: [
+    CommonModule,
+    // PrimeNG Modules
+    CardModule,
+    ButtonModule,
+    TagModule
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  standalone: false
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements OnDestroy {
   // ✅ Using inject() instead of constructor injection
