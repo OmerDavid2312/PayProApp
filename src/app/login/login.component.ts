@@ -165,6 +165,12 @@ export class LoginComponent implements OnDestroy {
     return !!(field && field.invalid && (field.dirty || field.touched || this.submitted()));
   }
 
+  // ✅ Helper method for forgot password field validation
+  isForgotPasswordFieldInvalid(fieldName: string): boolean {
+    const field = this.forgotPasswordForm.get(fieldName);
+    return !!(field && field.invalid && field.touched);
+  }
+
   onSubmit() {
     this.submitted.set(true);
 
@@ -296,7 +302,15 @@ export class LoginComponent implements OnDestroy {
 
   // ✅ Handle forgot password form submission
   onSubmitForgotPassword(): void {
+    // Mark all fields as touched to show validation errors
+    this.forgotPasswordForm.markAllAsTouched();
+    
     if (this.forgotPasswordForm.invalid) {
+      this.messageService.add({
+        severity: 'error',
+        summary: this.translate.instant('LOGIN.form_error'),
+        detail: this.translate.instant('LOGIN.fill_required_fields')
+      });
       return;
     }
 
@@ -317,21 +331,39 @@ export class LoginComponent implements OnDestroy {
 
         this.messageService.add({
           severity: 'success',
-          summary: 'Request Sent',
-          detail: `Password reset instructions have been sent to ${destinationType}.`
+          summary: this.translate.instant('LOGIN.request_sent'),
+          detail: `${this.translate.instant('LOGIN.password_reset_sent')} ${destinationType}.`
         });
         this.showForgotPasswordDialog.set(false);
         this.forgotPasswordForm.reset({
           resetMethod: 'email'
         });
-        this.showForgotPasswordDialog.set(false);
       }),
       catchError(error => {
         console.error('Failed to send password reset:', error);
+        let errorMessage = this.translate.instant('LOGIN.password_reset_failed');
+        
+        if (error.status === 404) {
+          errorMessage = this.translate.instant('LOGIN.system_id_not_found');
+        } else if (error.status === 400) {
+          errorMessage = this.translate.instant('LOGIN.invalid_email_mobile');
+        } else if (error.status >= 500) {
+          errorMessage = this.translate.instant('LOGIN.server_error_try_later');
+        }
+        
+        // Handle specific error codes from the server
+        if (error.error?.errorCode === 9910) {
+          errorMessage = this.translate.instant('LOGIN.user_not_found');
+        } else if (error.error?.errorCode) {
+          // Handle other specific error codes
+          console.warn('Server error code:', error.error.errorCode, 'Message:', error.error.error);
+          errorMessage = this.translate.instant('LOGIN.password_reset_failed');
+        }
+        
         this.messageService.add({
           severity: 'error',
-          summary: 'Request Failed',
-          detail: 'Failed to send password reset instructions. Please try again.'
+          summary: this.translate.instant('LOGIN.request_failed'),
+          detail: errorMessage
         });
         return of(null);
       }),

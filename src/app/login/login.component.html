@@ -141,7 +141,13 @@
                formControlName="systemId"
                [placeholder]="'LOGIN.system_id' | translate"
                class="w-full"
+               [class.ng-invalid]="isForgotPasswordFieldInvalid('systemId')"
         />
+        <div class="h-1rem mt-1">
+          @if (isForgotPasswordFieldInvalid('systemId')) {
+            <small class="p-error">{{ 'LOGIN.system_id_err' | translate }}</small>
+          }
+        </div>
       </div>
 
       <!-- Send Reset To Selection -->
@@ -176,7 +182,13 @@
                  formControlName="email"
                  [placeholder]="'LOGIN.enter_email_address' | translate"
                  class="w-full"
+                 [class.ng-invalid]="isForgotPasswordFieldInvalid('email')"
           />
+          <div class="h-1rem mt-1">
+            @if (isForgotPasswordFieldInvalid('email')) {
+              <small class="p-error">{{ 'LOGIN.valid_email_required' | translate }}</small>
+            }
+          </div>
         </div>
       }
 
@@ -191,7 +203,13 @@
                  formControlName="mobile"
                  [placeholder]="'LOGIN.enter_mobile_number' | translate"
                  class="w-full"
+                 [class.ng-invalid]="isForgotPasswordFieldInvalid('mobile')"
           />
+          <div class="h-1rem mt-1">
+            @if (isForgotPasswordFieldInvalid('mobile')) {
+              <small class="p-error">{{ 'LOGIN.valid_mobile_required' | translate }}</small>
+            }
+          </div>
         </div>
       }
 
