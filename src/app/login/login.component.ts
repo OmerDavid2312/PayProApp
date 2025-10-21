@@ -24,6 +24,9 @@ import { SystemService } from '../services/system.service';
 import { LoginDetails, SuccessfullLoginInfo } from '../models/login.models';
 import { NavigationUtils } from '../utils/navigation.utils';
 
+// Components
+import { TermsComponent } from './terms/terms.component';
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -38,7 +41,8 @@ import { NavigationUtils } from '../utils/navigation.utils';
     CardModule,
     ToastModule,
     DialogModule,
-    RadioButtonModule
+    RadioButtonModule,
+    TermsComponent
   ],
   providers: [MessageService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -70,6 +74,7 @@ export class LoginComponent implements OnDestroy {
   readonly returnUrl = signal('/dashboard');
   readonly showForgotPasswordDialog = signal(false);
   readonly forgotPasswordLoading = signal(false);
+  readonly showTermsDialog = signal(false);
 
   // ✅ Typed reactive form with proper validation
   readonly loginForm = this.fb.group({
@@ -340,6 +345,11 @@ export class LoginComponent implements OnDestroy {
     this.forgotPasswordForm.reset({
       resetMethod: 'email'
     });
+  }
+
+  // ✅ Handle terms modal
+  onShowTerms(): void {
+    this.showTermsDialog.set(true);
   }
 
   addRecaptchaScript() {

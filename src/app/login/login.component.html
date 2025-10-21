@@ -84,7 +84,7 @@
                       formControlName="acceptTerms"
                       [binary]="true"></p-checkbox>
           <label for="acceptTerms" class="text-900">
-            {{ 'LOGIN.accept_terms' | translate }} <a href="assets/terms.html" target="_blank" rel="noopener noreferrer">{{ 'LOGIN.terms' | translate }}</a> *
+            {{ 'LOGIN.accept_terms' | translate }} <a href="#" (click)="onShowTerms(); $event.preventDefault()" class="text-primary cursor-pointer">{{ 'LOGIN.terms' | translate }}</a> *
           </label>
         </div>
         <div class="h-1rem mt-1">
@@ -209,4 +209,10 @@
       </div>
     </form>
   </p-dialog>
+
+  <!-- Terms and Conditions Component -->
+  <app-terms
+    [visible]="showTermsDialog()"
+    (visibleChange)="showTermsDialog.set($event)">
+  </app-terms>
 </div>
