@@ -8,7 +8,6 @@ import { SystemService } from '../services/system.service';
 import { NavigationUtils } from '../utils/navigation.utils';
 import { Location } from '@angular/common';
 
-// ✅ Functional guard following cursor rules with RxJS streams
 export const AuthGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> => {
   const authService = inject(AuthService);
   const userService = inject(UserService);
