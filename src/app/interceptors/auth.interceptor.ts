@@ -14,17 +14,21 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (authData?.token) {
     req = req.clone({
       setHeaders: {
-        [authService.TOKEN_HEADER_NAME]: JSON.stringify({token:authData.token})
+        [authService.TOKEN_HEADER_NAME]: JSON.stringify({token: authData.token})
       }
     });
   }
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401) {
-        // Handle unauthorized access
-        authService.deleteAllData();
-        router.navigate(['/login']);
+      // Handle authentication errors (401 Unauthorized, 403 Forbidden, 419 Session Expired)
+      const authErrorStatuses = [401, 403, 419];
+      if (authErrorStatuses.includes(error.status)) {
+        // Only redirect if not already on login page to avoid infinite loops
+        if (!router.url.includes('/login')) {
+          authService.deleteAllData();
+          router.navigate(['/login']);
+        }
       }
       return throwError(() => error);
     })
