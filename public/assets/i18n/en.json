@@ -419,5 +419,9 @@
     "message": "Oops! The page you're looking for doesn't exist or has been moved.",
     "go_home": "Go to Dashboard",
     "go_back": "Go Back"
+  },
+  "LANGUAGE": {
+    "select_language": "Select Language",
+    "language": "Language"
   }
 }

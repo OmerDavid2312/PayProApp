@@ -1,2 +1,51 @@
-// No custom styles - Pure PrimeNG theme application
-// All styling is handled by the custom TicketAdminTheme preset
+// Language selector header styles
+.language-header {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.language-header:hover {
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.language-selector-container {
+  min-width: 140px;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .language-header {
+    position: fixed;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+  }
+  
+  .language-selector-container {
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .language-header {
+    top: 0.25rem;
+    right: 0.25rem;
+    padding: 0.4rem 0.6rem;
+  }
+  
+  .language-selector-container {
+    min-width: 100px;
+  }
+}

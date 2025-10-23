@@ -1,3 +1,10 @@
 <div class="main-app" [attr.dir]="isRtl() ? 'rtl' : 'ltr'">
+  <!-- Language Selector Header -->
+  <div class="language-header">
+    <div class="language-selector-container">
+      <app-language-selector />
+    </div>
+  </div>
+  
   <router-outlet />
 </div>
