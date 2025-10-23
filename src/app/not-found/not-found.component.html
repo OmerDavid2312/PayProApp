@@ -1,0 +1,36 @@
+<div class="not-found-container">
+  <div class="not-found-content">
+    <div class="error-animation">
+      <div class="error-number">
+        <span class="four">4</span>
+        <span class="zero">
+          <i class="pi pi-ban"></i>
+        </span>
+        <span class="four">4</span>
+      </div>
+    </div>
+
+    <h1 class="error-title">{{ 'NOT_FOUND.title' | translate }}</h1>
+    <p class="error-message">
+      {{ 'NOT_FOUND.message' | translate }}
+    </p>
+
+    <div class="error-actions">
+      <p-button 
+        [label]="'NOT_FOUND.go_home' | translate"
+        icon="pi pi-home"
+        (onClick)="goHome()"
+        styleClass="mr-2" />
+      <p-button 
+        [label]="'NOT_FOUND.go_back' | translate"
+        icon="pi pi-arrow-left"
+        severity="secondary"
+        (onClick)="goBack()" />
+    </div>
+
+    <div class="error-illustration">
+      <i class="pi pi-exclamation-triangle"></i>
+    </div>
+  </div>
+</div>
+

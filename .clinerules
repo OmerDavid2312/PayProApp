@@ -30,6 +30,9 @@
 - Use new functional interceptors instead of class-based
 - Prefer functional guards over class-based guards
 
+
+#i18
+  - use i18 for transalte all text you created! 
 ## PrimeNG 20 Guidelines
 
 ### Component Usage

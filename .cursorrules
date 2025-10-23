@@ -9,6 +9,10 @@ You are an expert Angular 20 developer working on a PayPro application. Follow t
 - **Language**: TypeScript with strict mode enabled
 - **Architecture**: Signal-based reactive programming
 
+
+#i18
+  - use i18 for transalte all text you created! 
+  
 ## Angular 20 Modern Syntax
 ### RXJS
  - Prefer to use RXJS over promises.
