@@ -1,124 +1,129 @@
-<div class="flex align-items-center justify-content-center h-screen bg-primary-50 p-8">
-
+<div class="login-container">
   <p-toast></p-toast>
 
-  <p-card class="w-full max-w-md shadow-4 border-round-lg mx-8">
-    <ng-template pTemplate="header">
-      <div class="text-center py-4">
-        <h1 class="text-3xl font-bold text-900 m-0">{{ 'LOGIN.login_screen' | translate }}</h1>
-        <p class="text-600 mt-2 mb-0">{{ 'HOME.WELCOME_BACK' | translate }}!</p>
+  <div class="login-wrapper">
+    <!-- Login Card -->
+    <div class="login-card">
+      <!-- Header -->
+      <div class="login-header">
+        <div class="logo-container">
+          <i class="pi pi-ticket"></i>
+        </div>
+        <h1 class="login-title">{{ 'LOGIN.login_screen' | translate }}</h1>
+        <p class="login-subtitle">{{ 'HOME.WELCOME_BACK' | translate }}!</p>
       </div>
-    </ng-template>
-    <ng-template pTemplate="footer">
-      <div class="text-center mt-2">
-        <p-button
-          type="button"
-          [label]="'LOGIN.forgot_password' | translate"
-          severity="secondary"
-          [text]="true"
-          (onClick)="onForgotPassword()"
-          styleClass="p-0"/>
-      </div>
-    </ng-template>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-column">
+      <!-- Login Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        
+        <!-- System ID Field -->
+        @if (showSystemId()) {
+          <div class="form-field">
+            <label for="systemId" class="field-label">{{ 'LOGIN.system_id' | translate }} *</label>
+            <input pInputText
+                   id="systemId"
+                   type="number"
+                   formControlName="systemId"
+                   [placeholder]="'LOGIN.system_id' | translate"
+                   class="w-full"
+                   [class.ng-invalid]="isFieldInvalid('systemId')"
+            />
+            <div class="field-error">
+              @if (isFieldInvalid('systemId')) {
+                <small class="p-error">{{ 'LOGIN.system_id_err' | translate }}</small>
+              }
+            </div>
+          </div>
+        }
 
-      <!-- System ID Field -->
-      @if (showSystemId()) {
-        <div class="field">
-          <label for="systemId" class="block text-900 font-medium mb-2">{{ 'LOGIN.system_id' | translate }} *</label>
+        <!-- Username Field -->
+        <div class="form-field">
+          <label for="username" class="field-label">{{ 'LOGIN.user_name' | translate }} *</label>
           <input pInputText
-                 id="systemId"
-                 type="number"
-                 formControlName="systemId"
-                 [placeholder]="'LOGIN.system_id' | translate"
+                 id="username"
+                 formControlName="username"
+                 [placeholder]="'LOGIN.user_name' | translate"
                  class="w-full"
-                 [class.ng-invalid]="isFieldInvalid('systemId')"
+                 [class.ng-invalid]="isFieldInvalid('username')"
           />
-          <div class="h-1rem mt-1">
-            @if (isFieldInvalid('systemId')) {
-              <small class="p-error">{{ 'LOGIN.system_id_err' | translate }}</small>
+          <div class="field-error">
+            @if (isFieldInvalid('username')) {
+              <small class="p-error">{{ 'LOGIN.username_err' | translate }}</small>
             }
           </div>
         </div>
-      }
 
-      <!-- Username Field -->
-      <div class="field">
-        <label for="username" class="block text-900 font-medium mb-2">{{ 'LOGIN.user_name' | translate }} *</label>
-        <input pInputText
-               id="username"
-               formControlName="username"
-               [placeholder]="'LOGIN.user_name' | translate"
-               class="w-full"
-               [class.ng-invalid]="isFieldInvalid('username')"
-        />
-        <div class="h-1rem mt-1">
-          @if (isFieldInvalid('username')) {
-            <small class="p-error">{{ 'LOGIN.username_err' | translate }}</small>
-          }
+        <!-- Password Field -->
+        <div class="form-field">
+          <label for="password" class="field-label">{{ 'LOGIN.pass' | translate }} *</label>
+          <p-password formControlName="password"
+                      [placeholder]="'LOGIN.pass' | translate"
+                      [toggleMask]="true"
+                      [feedback]="false"
+                      styleClass="w-full"
+                      inputStyleClass="w-full"
+          />
+          <div class="field-error">
+            @if (isFieldInvalid('password')) {
+              <small class="p-error">{{ 'LOGIN.pass_err' | translate }}</small>
+            }
+          </div>
         </div>
-      </div>
 
-      <!-- Password Field -->
-      <div class="field">
-        <label for="password" class="block text-900 font-medium mb-2">{{ 'LOGIN.pass' | translate }} *</label>
-        <p-password formControlName="password"
-                    [placeholder]="'LOGIN.pass' | translate"
-                    [toggleMask]="true"
-                    [feedback]="false"
-                    styleClass="w-full"
-                    inputStyleClass="w-full"
-        />
-        <div class="h-1rem mt-1">
-          @if (isFieldInvalid('password')) {
-            <small class="p-error">{{ 'LOGIN.pass_err' | translate }}</small>
-          }
+        <!-- Accept Terms -->
+        <div class="form-field">
+          <div class="checkbox-field">
+            <p-checkbox inputId="acceptTerms"
+                        formControlName="acceptTerms"
+                        [binary]="true"></p-checkbox>
+            <label for="acceptTerms" class="checkbox-label">
+              {{ 'LOGIN.accept_terms' | translate }} <a href="#" (click)="onShowTerms(); $event.preventDefault()" class="terms-link">{{ 'LOGIN.terms' | translate }}</a> *
+            </label>
+          </div>
+          <div class="field-error">
+            @if (isFieldInvalid('acceptTerms')) {
+              <small class="p-error">{{ 'LOGIN.must_accept_terms' | translate }}</small>
+            }
+          </div>
         </div>
-      </div>
 
-      <!-- Accept Terms (Required) -->
-      <div class="field">
-        <div class="flex align-items-center gap-2">
-          <p-checkbox inputId="acceptTerms"
-                      formControlName="acceptTerms"
-                      [binary]="true"></p-checkbox>
-          <label for="acceptTerms" class="text-900">
-            {{ 'LOGIN.accept_terms' | translate }} <a href="#" (click)="onShowTerms(); $event.preventDefault()" class="text-primary cursor-pointer">{{ 'LOGIN.terms' | translate }}</a> *
-          </label>
+        <!-- Auto Login -->
+        <div class="form-field">
+          <div class="checkbox-field">
+            <p-checkbox inputId="autoLogin"
+                        formControlName="autoLogin"
+                        [binary]="true"/>
+            <label for="autoLogin" class="checkbox-label">{{ 'LOGIN.login_automatically' | translate }}</label>
+          </div>
         </div>
-        <div class="h-1rem mt-1">
-          @if (isFieldInvalid('acceptTerms')) {
-            <small class="p-error">{{ 'LOGIN.must_accept_terms' | translate }}</small>
-          }
+
+        <!-- CAPTCHA -->
+        <div class="captcha-container">
+          <div #recaptcha></div>
         </div>
-      </div>
 
-      <!-- Auto Login Checkbox -->
-      <div class="field">
-        <div class="flex align-items-center gap-2">
-          <p-checkbox inputId="autoLogin"
-                      formControlName="autoLogin"
-                      [binary]="true"/>
-          <label for="autoLogin" class="text-900">{{ 'LOGIN.login_automatically' | translate }}</label>
+        <!-- Submit Button -->
+        <p-button type="submit"
+                  [label]="'LOGIN.enter' | translate"
+                  icon="pi pi-sign-in"
+                  [loading]="loading()"
+                  [disabled]="!captchaVerified() || loginForm.invalid"
+                  styleClass="w-full"
+                  size="large"/>
+
+        <!-- Forgot Password Link -->
+        <div class="forgot-password-container">
+          <p-button
+            type="button"
+            [label]="'LOGIN.forgot_password' | translate"
+            severity="secondary"
+            [text]="true"
+            (onClick)="onForgotPassword()"
+            styleClass="p-0"/>
         </div>
-      </div>
-
-      <!-- CAPTCHA -->
-      <div class="field">
-        <div class="flex justify-content-center" #recaptcha></div>
-      </div>
-
-      <!-- Submit Button -->
-      <p-button type="submit"
-                [label]="'LOGIN.enter' | translate"
-                icon="pi pi-sign-in"
-                [loading]="loading()"
-                [disabled]="!captchaVerified() || loginForm.invalid"
-                styleClass="w-full"
-                size="large"/>
-    </form>
-  </p-card>
+      </form>
+    </div>
+  </div>
 
   <!-- Forgot Password Dialog -->
   <p-dialog

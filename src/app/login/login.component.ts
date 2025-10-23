@@ -385,42 +385,96 @@ export class LoginComponent implements OnDestroy {
   }
 
   addRecaptchaScript() {
+    // Set up the callback first
     (window as any).grecaptchaCallback = () => {
       this.renderReCaptcha();
     }
 
-    (function (d, s, id) {
-      const fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) {
-        return;
-      }
-      const js = d.createElement(s) as HTMLScriptElement;
-      js.id = id;
-      js.src = 'https://www.google.com/recaptcha/api.js?onload=grecaptchaCallback&render=explicit';
-      if (fjs && fjs.parentNode) {
-        fjs.parentNode.insertBefore(js, fjs);
-      }
-    }(document, 'script', 'recaptcha-jssdk'));
+    // Check if grecaptcha is already loaded
+    if (typeof (window as any).grecaptcha !== 'undefined') {
+      // Script already loaded, render immediately
+      setTimeout(() => {
+        if (this.recaptchaElement && this.recaptchaElement.nativeElement) {
+          this.renderReCaptcha();
+        }
+      }, 100);
+      return;
+    }
+
+    // Check if script element already exists
+    if (document.getElementById('recaptcha-jssdk')) {
+      // Script is loading, wait for it
+      const checkRecaptcha = setInterval(() => {
+        if (typeof (window as any).grecaptcha !== 'undefined') {
+          clearInterval(checkRecaptcha);
+          if (this.recaptchaElement && this.recaptchaElement.nativeElement) {
+            this.renderReCaptcha();
+          }
+        }
+      }, 100);
+      return;
+    }
+
+    // Load the script
+    const script = document.createElement('script');
+    script.id = 'recaptcha-jssdk';
+    script.src = 'https://www.google.com/recaptcha/api.js?onload=grecaptchaCallback&render=explicit';
+    script.async = true;
+    script.defer = true;
+    
+    // Add error handler
+    script.onerror = () => {
+      console.error('Failed to load reCAPTCHA script');
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'CAPTCHA failed to load. Please refresh the page.'
+      });
+    };
+    
+    document.head.appendChild(script);
   }
 
   renderReCaptcha() {
-    (window as any).grecaptcha.render(this.recaptchaElement.nativeElement, {
-      'sitekey': '6LcwJIsfAAAAAD4a5e0NC6eiaFuEWOywyYziLsQz',
-      'callback': (response: string) => {
-        console.log('CAPTCHA verified successfully');
-        this.captchaVerified.set(true);
-        this.captchaToken.set(response);
-      },
-      'expired-callback': () => {
-        console.log('CAPTCHA expired');
-        this.captchaVerified.set(false);
-        this.captchaToken.set(null);
-      },
-      'error-callback': () => {
-        console.log('CAPTCHA error');
-        this.captchaVerified.set(false);
-        this.captchaToken.set(null);
+    try {
+      // Check if element is ready and not already rendered
+      if (!this.recaptchaElement || !this.recaptchaElement.nativeElement) {
+        console.error('reCAPTCHA element not ready');
+        return;
       }
-    });
+
+      // Check if already has children (already rendered)
+      if (this.recaptchaElement.nativeElement.children.length > 0) {
+        console.log('reCAPTCHA already rendered');
+        return;
+      }
+
+      // Check if grecaptcha is available
+      if (typeof (window as any).grecaptcha === 'undefined') {
+        console.error('grecaptcha not loaded');
+        return;
+      }
+
+      (window as any).grecaptcha.render(this.recaptchaElement.nativeElement, {
+        'sitekey': '6LcwJIsfAAAAAD4a5e0NC6eiaFuEWOywyYziLsQz',
+        'callback': (response: string) => {
+          console.log('CAPTCHA verified successfully');
+          this.captchaVerified.set(true);
+          this.captchaToken.set(response);
+        },
+        'expired-callback': () => {
+          console.log('CAPTCHA expired');
+          this.captchaVerified.set(false);
+          this.captchaToken.set(null);
+        },
+        'error-callback': () => {
+          console.log('CAPTCHA error');
+          this.captchaVerified.set(false);
+          this.captchaToken.set(null);
+        }
+      });
+    } catch (error) {
+      console.error('Error rendering reCAPTCHA:', error);
+    }
   }
 }
