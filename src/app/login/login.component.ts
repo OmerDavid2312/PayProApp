@@ -18,7 +18,6 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { MessageService } from 'primeng/api';
 
 // Services and Models
-import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { SystemService } from '../services/system.service';
 import { LoginDetails, SuccessfullLoginInfo } from '../models/login.models';
@@ -57,7 +56,6 @@ export class LoginComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly location = inject(Location);
-  private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
   private readonly systemService = inject(SystemService);
   private readonly messageService = inject(MessageService);
@@ -67,7 +65,6 @@ export class LoginComponent implements OnDestroy {
 
   // ✅ Using signals for reactive state
   readonly captchaVerified = signal(false);
-  readonly captchaToken = signal<string | null>(null);
   readonly loading = signal(false);
   readonly submitted = signal(false);
   readonly showSystemId = signal(true);
@@ -457,20 +454,17 @@ export class LoginComponent implements OnDestroy {
 
       (window as any).grecaptcha.render(this.recaptchaElement.nativeElement, {
         'sitekey': '6LcwJIsfAAAAAD4a5e0NC6eiaFuEWOywyYziLsQz',
-        'callback': (response: string) => {
+        'callback': () => {
           console.log('CAPTCHA verified successfully');
           this.captchaVerified.set(true);
-          this.captchaToken.set(response);
         },
         'expired-callback': () => {
           console.log('CAPTCHA expired');
           this.captchaVerified.set(false);
-          this.captchaToken.set(null);
         },
         'error-callback': () => {
           console.log('CAPTCHA error');
           this.captchaVerified.set(false);
-          this.captchaToken.set(null);
         }
       });
     } catch (error) {

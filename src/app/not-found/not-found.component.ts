@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'app-not-found',
@@ -11,8 +10,7 @@ import { CardModule } from 'primeng/card';
   imports: [
     CommonModule,
     TranslateModule,
-    ButtonModule,
-    CardModule
+    ButtonModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './not-found.component.html',
