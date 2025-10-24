@@ -127,6 +127,27 @@ export class UserFormComponent {
             styleClass="w-full" />
 ```
 
+### Form Field Labels
+```html
+<!-- ✅ MANDATORY: Add * to labels for required fields -->
+<label for="username" class="block text-900 font-medium mb-2">
+  {{ 'FORM.username' | translate }} *
+</label>
+<input pInputText id="username" formControlName="username" class="w-full" />
+
+<!-- ✅ Optional fields don't need * -->
+<label for="phone" class="block text-900 font-medium mb-2">
+  {{ 'FORM.phone' | translate }}
+</label>
+<input pInputText id="phone" formControlName="phone" class="w-full" />
+
+<!-- ✅ For i18n labels with required indicator -->
+<label for="email" class="block text-900 font-medium mb-2">
+  {{ 'FORM.email' | translate }} *
+</label>
+<input pInputText id="email" formControlName="email" class="w-full" />
+```
+
 ### Layout Components
 ```html
 <!-- ✅ Cards for content sections -->
@@ -354,6 +375,16 @@ ngOnInit() {
 }
 ```
 
+```html
+<!-- ❌ Missing * for required field labels -->
+<label for="username">{{ 'FORM.username' | translate }}</label>
+<input pInputText id="username" formControlName="username" />
+
+<!-- ❌ Wrong placement of * -->
+<label for="email">* {{ 'FORM.email' | translate }}</label>
+<input pInputText id="email" formControlName="email" />
+```
+
 ### ✅ Do This Instead
 ```typescript
 // ✅ Modern injection
@@ -379,6 +410,20 @@ readonly data = signal<Data[]>([]);
 })
 ```
 
+```html
+<!-- ✅ Correct placement of * for required fields -->
+<label for="username" class="block text-900 font-medium mb-2">
+  {{ 'FORM.username' | translate }} *
+</label>
+<input pInputText id="username" formControlName="username" class="w-full" />
+
+<!-- ✅ Optional fields without * -->
+<label for="phone" class="block text-900 font-medium mb-2">
+  {{ 'FORM.phone' | translate }}
+</label>
+<input pInputText id="phone" formControlName="phone" class="w-full" />
+```
+
 ## Code Quality Standards
 - Always use TypeScript strict mode
 - Implement proper error handling
@@ -388,5 +433,7 @@ readonly data = signal<Data[]>([]);
 - Prefer composition over inheritance
 - Use meaningful variable and function names
 - Add JSDoc comments for public APIs
+- **MANDATORY**: Add `*` to all required form field labels (e.g., `{{ 'FORM.field' | translate }} *`)
+- Use i18n for all user-facing text
 
 Remember: Always use PrimeNG components as-is without style overrides, use PrimeFlex for all layouts, and leverage Angular 20's modern features like signals and new control flow syntax.
