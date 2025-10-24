@@ -14,17 +14,28 @@ You are an expert Angular 20 developer working on a PayPro application. Follow t
   - use i18 for transalte all text you created! 
   
 ## Angular 20 Modern Syntax
+
+### Component Architecture
+- **MANDATORY**: Always use standalone components (no NgModules)
+- **MANDATORY**: All components must have `standalone: true`
+- **MANDATORY**: Separate HTML and SCSS files (no inline templates/styles)
+- Import dependencies directly in the component's `imports` array
+- Use standalone components for better tree-shaking and performance
+
 ### RXJS
- - Prefer to use RXJS over promises.
- - Prefer Signal over observables
+- Prefer to use RXJS over promises
+- Prefer Signal over observables
+
 ### Component Structure
 ```typescript
+// ✅ component.ts
 @Component({
   selector: 'app-example',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ButtonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `...`
+  templateUrl: './component.html',
+  styleUrl: './component.scss'
 })
 export class ExampleComponent {
   // ✅ Use inject() instead of constructor injection
@@ -42,6 +53,37 @@ export class ExampleComponent {
   );
 }
 ```
+
+### File Organization Rules
+```
+src/app/
+├── components/          # Reusable components (used in 2+ pages)
+│   ├── language-selector/
+│   ├── data-table/
+│   └── shared-button/
+├── login/              # Main screen components
+│   ├── login.component.ts
+│   ├── login.component.html
+│   ├── login.component.scss
+│   └── terms/          # Login-specific components
+│       ├── terms.component.ts
+│       ├── terms.component.html
+│       └── terms.component.scss
+├── dashboard/          # Main screen components
+│   ├── dashboard.component.ts
+│   ├── dashboard.component.html
+│   └── dashboard.component.scss
+└── profile/           # Main screen components
+    ├── profile.component.ts
+    ├── profile.component.html
+    └── profile.component.scss
+```
+
+### Component Placement Rules
+- **Main screens** (login, dashboard, profile): `src/app/[screen-name]/`
+- **Page-specific components**: `src/app/[screen-name]/[component-name]/`
+- **Reusable components** (used in 2+ pages): `src/app/components/[component-name]/`
+- **Always separate files**: `.ts`, `.html`, `.scss` (no inline templates/styles)
 
 ### Template Syntax
 ```html
@@ -432,6 +474,34 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
 ### ❌ Don't Do This
 ```typescript
+// ❌ NgModules (use standalone components instead)
+@NgModule({
+  declarations: [MyComponent],
+  imports: [CommonModule]
+})
+export class MyModule {}
+
+// ❌ Components without standalone: true
+@Component({
+  selector: 'app-example',
+  // Missing: standalone: true
+})
+
+// ❌ Inline templates and styles (use separate files)
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  template: `<div>Inline template</div>`,
+  styles: [`.inline { color: red; }`]
+})
+
+// ❌ Wrong file organization
+// ❌ Reusable component in page folder
+src/app/login/shared-button/  // Should be in components/
+
+// ❌ Page-specific component in components folder
+src/app/components/terms/     // Should be in login/terms/
+
 // ❌ Constructor injection (use inject() instead)
 constructor(private service: MyService) {}
 
@@ -478,6 +548,21 @@ ngOnInit() {
 
 ### ✅ Do This Instead
 ```typescript
+// ✅ Always use standalone components with separate files
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './example.component.html',
+  styleUrl: './example.component.scss'
+})
+export class ExampleComponent {}
+
+// ✅ Correct file organization
+// ✅ Main screen: src/app/login/
+// ✅ Page-specific: src/app/login/terms/
+// ✅ Reusable: src/app/components/language-selector/
+
 // ✅ Modern injection
 private readonly service = inject(MyService);
 
@@ -493,11 +578,9 @@ readonly data = signal<Data[]>([]);
 
 // ✅ Use signals or async pipe
 @Component({
-  template: `
-    @for (item of data(); track item.id) {
-      <div>{{ item.name }}</div>
-    }
-  `
+  standalone: true,
+  templateUrl: './component.html',
+  styleUrl: './component.scss'
 })
 ```
 
@@ -532,6 +615,13 @@ readonly data = signal<Data[]>([]);
 ```
 
 ## Code Quality Standards
+- **MANDATORY**: Always use standalone components (no NgModules)
+- **MANDATORY**: All components must have `standalone: true`
+- **MANDATORY**: Separate HTML and SCSS files (no inline templates/styles)
+- **MANDATORY**: Follow proper file organization:
+  - Main screens: `src/app/[screen-name]/`
+  - Page-specific components: `src/app/[screen-name]/[component-name]/`
+  - Reusable components: `src/app/components/[component-name]/`
 - Always use TypeScript strict mode
 - Implement proper error handling
 - Use OnPush change detection strategy
