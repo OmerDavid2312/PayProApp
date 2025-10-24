@@ -6,12 +6,13 @@
 
 .login-container {
   min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
-  padding: 2rem 1rem;
+  padding: 1rem;
   position: fixed;
   top: 0;
   left: 0;
@@ -40,9 +41,10 @@
   z-index: 1;
   width: 100%;
   max-width: 480px;
-  margin: 2rem auto;
+  margin: 0 auto;
   animation: fadeInUp 0.6s ease-out;
   flex-shrink: 0;
+  padding: 0.5rem 0; /* Add some padding to prevent cutting off */
 }
 
 @keyframes fadeInUp {
@@ -333,11 +335,19 @@
 // Responsive adjustments
 @media (max-width: 576px) {
   .login-container {
-    padding: 1rem;
+    padding: 0.5rem;
+    align-items: flex-start; /* Align to top on mobile */
+    padding-top: 2rem; /* Add top padding for mobile */
   }
 
   .login-wrapper {
-    margin: 1rem auto;
+    margin: 0 auto;
+    padding: 0.25rem 0;
+  }
+
+  .login-card {
+    padding: 1.5rem 1rem; /* Reduce padding on mobile */
+    margin: 0;
   }
 
   .login-form {
@@ -371,6 +381,50 @@
       i {
         font-size: 2rem;
       }
+    }
+
+    .login-title {
+      font-size: 1.375rem; /* Slightly smaller on mobile */
+      line-height: 1.2;
+    }
+
+    .login-subtitle {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+// Extra small devices (phones in landscape)
+@media (max-width: 480px) {
+  .login-container {
+    padding: 0.25rem;
+    padding-top: 1rem;
+  }
+
+  .login-card {
+    padding: 1.25rem 0.75rem;
+    border-radius: 12px;
+  }
+
+  .login-header {
+    margin-bottom: 1.25rem;
+
+    .logo-container {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 0.5rem;
+
+      i {
+        font-size: 1.75rem;
+      }
+    }
+
+    .login-title {
+      font-size: 1.25rem;
+    }
+
+    .login-subtitle {
+      font-size: 0.8125rem;
     }
   }
 }

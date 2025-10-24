@@ -284,6 +284,85 @@ export class UserFormComponent {
 </div>
 ```
 
+### Mobile-First Design Requirements
+```html
+<!-- ✅ MANDATORY: Mobile-first responsive design -->
+<div class="container">
+  <!-- Mobile: Full width, Desktop: Centered with max-width -->
+  <div class="w-full max-w-30rem mx-auto">
+    <p-card>
+      <!-- Mobile: Stack vertically, Desktop: Side by side -->
+      <div class="flex flex-column md:flex-row gap-3">
+        <div class="flex-1">Content 1</div>
+        <div class="flex-1">Content 2</div>
+      </div>
+    </p-card>
+  </div>
+</div>
+
+<!-- ✅ Mobile-friendly form layouts -->
+<div class="form-container">
+  <div class="grid">
+    <!-- Mobile: Single column, Desktop: Two columns -->
+    <div class="col-12 md:col-6">
+      <label class="block text-900 font-medium mb-2">
+        {{ 'FORM.field' | translate }} *
+      </label>
+      <input pInputText class="w-full" />
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Mobile-friendly buttons -->
+<div class="flex flex-column md:flex-row gap-2">
+  <p-button label="Primary Action" class="w-full md:w-auto" />
+  <p-button label="Secondary" severity="secondary" class="w-full md:w-auto" />
+</div>
+```
+
+### Mobile Viewport and Layout Rules
+```scss
+// ✅ MANDATORY: Mobile viewport handling
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+}
+
+// ✅ Mobile-first container
+.mobile-container {
+  width: 100%;
+  padding: 1rem;
+  
+  @media (min-width: 768px) {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+// ✅ Mobile-friendly cards
+.mobile-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  
+  @media (min-width: 768px) {
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  @media (max-width: 480px) {
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+}
+```
+
 ## Services and State Management
 
 ### Modern Service Pattern
@@ -383,6 +462,18 @@ ngOnInit() {
 <!-- ❌ Wrong placement of * -->
 <label for="email">* {{ 'FORM.email' | translate }}</label>
 <input pInputText id="email" formControlName="email" />
+
+<!-- ❌ Mobile-unfriendly layouts -->
+<div class="flex flex-row"> <!-- Always use responsive flex -->
+  <div class="w-6">Content</div>
+  <div class="w-6">Content</div>
+</div>
+
+<!-- ❌ Fixed widths without mobile consideration -->
+<div style="width: 400px;">Content</div>
+
+<!-- ❌ Missing mobile viewport meta tag -->
+<!-- Must include: <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
 ```
 
 ### ✅ Do This Instead
@@ -422,6 +513,22 @@ readonly data = signal<Data[]>([]);
   {{ 'FORM.phone' | translate }}
 </label>
 <input pInputText id="phone" formControlName="phone" class="w-full" />
+
+<!-- ✅ Mobile-friendly responsive layouts -->
+<div class="flex flex-column md:flex-row gap-3">
+  <div class="flex-1">Content 1</div>
+  <div class="flex-1">Content 2</div>
+</div>
+
+<!-- ✅ Mobile-friendly containers -->
+<div class="w-full max-w-30rem mx-auto p-3">
+  <p-card>Mobile-optimized content</p-card>
+</div>
+
+<!-- ✅ Mobile-friendly buttons -->
+<div class="flex flex-column md:flex-row gap-2">
+  <p-button label="Action" class="w-full md:w-auto" />
+</div>
 ```
 
 ## Code Quality Standards
@@ -435,5 +542,11 @@ readonly data = signal<Data[]>([]);
 - Add JSDoc comments for public APIs
 - **MANDATORY**: Add `*` to all required form field labels (e.g., `{{ 'FORM.field' | translate }} *`)
 - Use i18n for all user-facing text
+- **MANDATORY**: All components must be mobile-friendly with responsive design
+- **MANDATORY**: Use mobile-first approach with `flex flex-column md:flex-row` patterns
+- **MANDATORY**: Test on mobile devices (320px, 375px, 414px, 768px, 1024px)
+- **MANDATORY**: Use `min-height: 100dvh` for mobile viewport handling
+- **MANDATORY**: Avoid fixed widths, use responsive classes (`w-full md:w-6`)
+- **MANDATORY**: Ensure touch targets are at least 44px for mobile accessibility
 
 Remember: Always use PrimeNG components as-is without style overrides, use PrimeFlex for all layouts, and leverage Angular 20's modern features like signals and new control flow syntax.
