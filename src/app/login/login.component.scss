@@ -266,33 +266,6 @@
   }
 }
 
-::ng-deep .p-button {
-  font-weight: 600;
-  padding: 0.875rem 1.5rem;
-  border-radius: 12px;
-  transition: all 0.2s ease;
-  text-transform: none;
-  letter-spacing: 0.02em;
-
-  &.p-button-lg {
-    padding: 1rem 1.5rem;
-    font-size: 1rem;
-  }
-
-  &:not(:disabled):hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
-  }
-
-  &:not(:disabled):active {
-    transform: translateY(0);
-  }
-
-  &:focus {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-  }
-}
-
 .forgot-password-container {
   text-align: center;
   margin-top: 0.5rem;
@@ -301,10 +274,10 @@
     color: #64748b;
     font-size: 0.9375rem;
 
-    &:hover {
-      color: var(--p-primary-color);
-      background: transparent;
-    }
+    //&:hover {
+    //  color: var(--p-primary-color);
+    //  background: transparent;
+    //}
   }
 }
 
