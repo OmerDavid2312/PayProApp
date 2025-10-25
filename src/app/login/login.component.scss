@@ -415,14 +415,12 @@
   }
 }
 
-// Input error state
-::ng-deep .ng-invalid.ng-touched,
-::ng-deep .ng-invalid.ng-dirty {
-  .p-inputtext {
-    border-color: #ef4444;
+// Input error state - only apply when explicitly marked as invalid
+input.ng-invalid,
+::ng-deep .p-password.ng-invalid .p-inputtext {
+  border-color: #ef4444 !important;
 
-    &:focus {
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-    }
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
   }
 }
