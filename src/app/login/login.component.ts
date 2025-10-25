@@ -25,6 +25,7 @@ import { NavigationUtils } from '../utils/navigation.utils';
 
 // Components
 import { TermsComponent } from './terms/terms.component';
+import { LanguageSelectorComponent } from '../components/language-selector/language-selector.component';
 
 @Component({
   selector: 'app-login',
@@ -41,7 +42,8 @@ import { TermsComponent } from './terms/terms.component';
     ToastModule,
     DialogModule,
     RadioButtonModule,
-    TermsComponent
+    TermsComponent,
+    LanguageSelectorComponent
   ],
   providers: [MessageService],
   changeDetection: ChangeDetectionStrategy.OnPush,

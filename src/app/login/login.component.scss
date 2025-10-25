@@ -4,6 +4,14 @@
   height: 100%;
 }
 
+// Language selector - top right corner
+.language-header {
+  position: fixed;
+  top: 1rem;
+  right: 1.8rem;
+  z-index: 1000;
+}
+
 .login-container {
   min-height: 100vh;
   min-height: 100dvh; /* Dynamic viewport height for mobile */

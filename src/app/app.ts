@@ -3,7 +3,6 @@ import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { LanguageSelectorComponent } from './components/language-selector/language-selector.component';
 
 // PrimeNG Modules
 import { InputTextModule } from 'primeng/inputtext';
@@ -36,8 +35,7 @@ import { DrawerModule } from 'primeng/drawer';
     StepsModule,
     MenuModule,
     ContextMenuModule,
-    DrawerModule,
-    LanguageSelectorComponent
+    DrawerModule
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
