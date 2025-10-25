@@ -36,7 +36,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: 
+    background-image:
       radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
       radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
     pointer-events: none;
@@ -69,7 +69,7 @@
 .login-card {
   background: #ffffff;
   border-radius: 24px;
-  box-shadow: 
+  box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.3),
     0 0 0 1px rgba(255, 255, 255, 0.1);
   padding: 2.5rem;
@@ -157,7 +157,7 @@
   input[pInputText],
   ::ng-deep .p-password {
     transition: all 0.2s ease;
-    
+
     &:hover {
       border-color: var(--p-primary-color);
     }
@@ -201,7 +201,7 @@
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
-  
+
   ::ng-deep .p-checkbox {
     margin-top: 2px;
   }
@@ -235,7 +235,7 @@
   position: relative;
   z-index: 1;
   min-height: 78px;
-  
+
   // Loading placeholder
   &:empty::before {
     content: '';
@@ -257,7 +257,7 @@
       background-position: -200% 0;
     }
   }
-  
+
   ::ng-deep > div {
     display: inline-block;
     border-radius: 8px;
@@ -301,7 +301,7 @@
   ::ng-deep .p-button-text {
     color: #64748b;
     font-size: 0.9375rem;
-    
+
     &:hover {
       color: var(--p-primary-color);
       background: transparent;
@@ -458,7 +458,7 @@
 ::ng-deep .ng-invalid.ng-dirty {
   .p-inputtext {
     border-color: #ef4444;
-    
+
     &:focus {
       box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
     }
