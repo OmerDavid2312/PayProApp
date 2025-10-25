@@ -18,7 +18,6 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { MessageService } from 'primeng/api';
 
 // Services and Models
-import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { SystemService } from '../services/system.service';
 import { LoginDetails, SuccessfullLoginInfo } from '../models/login.models';
@@ -26,6 +25,7 @@ import { NavigationUtils } from '../utils/navigation.utils';
 
 // Components
 import { TermsComponent } from './terms/terms.component';
+import { LanguageSelectorComponent } from '../components/language-selector/language-selector.component';
 
 @Component({
   selector: 'app-login',
@@ -42,7 +42,8 @@ import { TermsComponent } from './terms/terms.component';
     ToastModule,
     DialogModule,
     RadioButtonModule,
-    TermsComponent
+    TermsComponent,
+    LanguageSelectorComponent
   ],
   providers: [MessageService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,7 +58,6 @@ export class LoginComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly location = inject(Location);
-  private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
   private readonly systemService = inject(SystemService);
   private readonly messageService = inject(MessageService);
@@ -67,7 +67,6 @@ export class LoginComponent implements OnDestroy {
 
   // ✅ Using signals for reactive state
   readonly captchaVerified = signal(false);
-  readonly captchaToken = signal<string | null>(null);
   readonly loading = signal(false);
   readonly submitted = signal(false);
   readonly showSystemId = signal(true);
@@ -385,42 +384,93 @@ export class LoginComponent implements OnDestroy {
   }
 
   addRecaptchaScript() {
+    // Set up the callback first
     (window as any).grecaptchaCallback = () => {
       this.renderReCaptcha();
     }
 
-    (function (d, s, id) {
-      const fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) {
-        return;
-      }
-      const js = d.createElement(s) as HTMLScriptElement;
-      js.id = id;
-      js.src = 'https://www.google.com/recaptcha/api.js?onload=grecaptchaCallback&render=explicit';
-      if (fjs && fjs.parentNode) {
-        fjs.parentNode.insertBefore(js, fjs);
-      }
-    }(document, 'script', 'recaptcha-jssdk'));
+    // Check if grecaptcha is already loaded
+    if (typeof (window as any).grecaptcha !== 'undefined') {
+      // Script already loaded, render immediately
+      setTimeout(() => {
+        if (this.recaptchaElement && this.recaptchaElement.nativeElement) {
+          this.renderReCaptcha();
+        }
+      }, 100);
+      return;
+    }
+
+    // Check if script element already exists
+    if (document.getElementById('recaptcha-jssdk')) {
+      // Script is loading, wait for it
+      const checkRecaptcha = setInterval(() => {
+        if (typeof (window as any).grecaptcha !== 'undefined') {
+          clearInterval(checkRecaptcha);
+          if (this.recaptchaElement && this.recaptchaElement.nativeElement) {
+            this.renderReCaptcha();
+          }
+        }
+      }, 100);
+      return;
+    }
+
+    // Load the script
+    const script = document.createElement('script');
+    script.id = 'recaptcha-jssdk';
+    script.src = 'https://www.google.com/recaptcha/api.js?onload=grecaptchaCallback&render=explicit';
+    script.async = true;
+    script.defer = true;
+    
+    // Add error handler
+    script.onerror = () => {
+      console.error('Failed to load reCAPTCHA script');
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'CAPTCHA failed to load. Please refresh the page.'
+      });
+    };
+    
+    document.head.appendChild(script);
   }
 
   renderReCaptcha() {
-    (window as any).grecaptcha.render(this.recaptchaElement.nativeElement, {
-      'sitekey': '6LcwJIsfAAAAAD4a5e0NC6eiaFuEWOywyYziLsQz',
-      'callback': (response: string) => {
-        console.log('CAPTCHA verified successfully');
-        this.captchaVerified.set(true);
-        this.captchaToken.set(response);
-      },
-      'expired-callback': () => {
-        console.log('CAPTCHA expired');
-        this.captchaVerified.set(false);
-        this.captchaToken.set(null);
-      },
-      'error-callback': () => {
-        console.log('CAPTCHA error');
-        this.captchaVerified.set(false);
-        this.captchaToken.set(null);
+    try {
+      // Check if element is ready and not already rendered
+      if (!this.recaptchaElement || !this.recaptchaElement.nativeElement) {
+        console.error('reCAPTCHA element not ready');
+        return;
       }
-    });
+
+      // Check if already has children (already rendered)
+      if (this.recaptchaElement.nativeElement.children.length > 0) {
+        console.log('reCAPTCHA already rendered');
+        return;
+      }
+
+      // Check if grecaptcha is available
+      if (typeof (window as any).grecaptcha === 'undefined') {
+        console.error('grecaptcha not loaded');
+        return;
+      }
+
+      (window as any).grecaptcha.render(this.recaptchaElement.nativeElement, {
+        'sitekey': '6LcwJIsfAAAAAD4a5e0NC6eiaFuEWOywyYziLsQz',
+        'callback': () => {
+          console.log('CAPTCHA verified successfully');
+          this.captchaVerified.set(true);
+        },
+        'expired-callback': () => {
+          console.log('CAPTCHA expired');
+          this.captchaVerified.set(false);
+        },
+        'error-callback': () => {
+          console.log('CAPTCHA error');
+          this.captchaVerified.set(false);
+        }
+      });
+    } catch (error) {
+      console.error('Error rendering reCAPTCHA:', error);
+    }
   }
 }

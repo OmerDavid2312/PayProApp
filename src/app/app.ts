@@ -47,12 +47,13 @@ export class App {
   protected readonly currentLang = signal('en');
 
   constructor() {
-    // Set the default language
-    this.translate.setDefaultLang('en');
-    // Use browser language if available, otherwise default to English
     const browserLang = this.translate.getBrowserLang();
     const supportedLangs = ['en', 'he', 'ar', 'ru'];
-    const langToUse = browserLang && supportedLangs.includes(browserLang) ? browserLang : 'en';
+    const savedLanguage = localStorage.getItem('preferred-language'); 
+    let langToUse =  savedLanguage || browserLang ||'en';
+    // fallback to english if the language is not supported
+    if(!supportedLangs.includes(langToUse)) { langToUse = 'en'; }
+    this.translate.setDefaultLang(langToUse);
     this.translate.use(langToUse);
     this.currentLang.set(langToUse);
     this.updateDirection(langToUse);

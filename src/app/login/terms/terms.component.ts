@@ -21,6 +21,7 @@ import { ButtonModule } from 'primeng/button';
       [modal]="true"
       [style]="{width: '80vw', maxWidth: '800px'}"
       [draggable]="false"
+      [dismissableMask]="true"
       [resizable]="false"
       [closable]="true">
       

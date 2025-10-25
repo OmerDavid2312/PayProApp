@@ -17,7 +17,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: '404',
+    loadComponent: () => import('./not-found/not-found.component').then(c => c.NotFoundComponent)
+  },
+  {
     path: '**',
-    redirectTo: '/dashboard'
+    loadComponent: () => import('./not-found/not-found.component').then(c => c.NotFoundComponent)
   }
 ];

@@ -59,28 +59,6 @@ export class SystemService {
     }
   }
 
-  // async getDeviceUniqueId(): Promise<string> {
-  //   const secure = (new Promise<string>(resolve => {
-  //     const uniqueIdFromMemory = localStorage.getItem(this.DEVICE_STORED_UNIQUE_ID);
-  //     if (uniqueIdFromMemory) {
-  //       console.log("Unique id exists on memory...", uniqueIdFromMemory);
-  //       if (uniqueIdFromMemory.startsWith("OKEY")) {
-  //         resolve(uniqueIdFromMemory);
-  //         return;
-  //       } else {
-  //         console.warn("Not The new UniqueKey, reassembling unique Id");
-  //       }
-  //     }
-  //     FingerprintJS.load().then(async fp => {
-  //       const result = await fp.get();
-  //       let uniqueId: string = "OKEY" + result.visitorId + new Date().getTime();
-  //       console.info("New Generated Unique ID: ", uniqueId);
-  //       localStorage.setItem(this.DEVICE_STORED_UNIQUE_ID, uniqueId);
-  //       resolve(uniqueId);
-  //     });
-  //   }));
-  //   return secure;
-  // }
 
   getAutoLoginEnabled(): boolean {
     return localStorage.getItem('autoLogin') === 'true';
