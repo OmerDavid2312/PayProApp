@@ -14,7 +14,7 @@ export class UserService {
 
   // Signals for reactive state management
   private readonly _user = signal<BasicUser | null>(null);
-  private readonly _isConnectedAnonymously = signal<boolean>(true);
+  private readonly _isAuthenticated = signal<boolean>(false);
 
   // Public readonly signals
   readonly user = this._user.asReadonly();
@@ -50,7 +50,7 @@ export class UserService {
    * This is the main authentication method that users interact with
    */
   login(loginDetails: LoginDetails): Observable<SuccessfullLoginInfo> {
-    this._isConnectedAnonymously.set(false);
+    this._isAuthenticated.set(true);
     return this.http.post<SuccessfullLoginInfo>('/smartClub/rest/authorizedUsersManagement/login', loginDetails).pipe(
       tap(response => {
         // Update auth data using RxJS operators instead of async/await
@@ -84,7 +84,7 @@ export class UserService {
    * Only used when "Remember me" was previously checked
    */
   loginWithDeviceId(loginDetails: LoginDetails): Observable<SuccessfullLoginInfo> {
-    this._isConnectedAnonymously.set(false);
+    this._isAuthenticated.set(true);
     return this.http.get<SuccessfullLoginInfo>('/api/loginWithDeviceId', {
       params: new HttpParams()
         .append('systemId', loginDetails.systemId)
@@ -124,7 +124,7 @@ export class UserService {
     return new Observable(subscriber => {
       this.authService.deleteAllData();
       this._user.set(null);
-      this._isConnectedAnonymously.set(true);
+      this._isAuthenticated.set(false);
       subscriber.next();
       subscriber.complete();
     });
