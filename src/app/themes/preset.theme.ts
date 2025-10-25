@@ -19,12 +19,12 @@ const MyPreset = definePreset(Aura, {
         colorScheme: {
             light: {
                 primary: {
-                    color: '{blue.950}',
-                    hoverColor: '{blue.900}',
-                    activeColor: '{blue.800}'
+                    color: '{blue.600}',
+                    hoverColor: '{blue.800}',
+                    activeColor: '{blue.700}'
                 },
                 highlight: {
-                    background: '{blue.950}',
+                    background: '{blue.600}',
                     focusBackground: '{blue.700}',
                     color: '#ffffff',
                     focusColor: '#ffffff'
@@ -32,13 +32,13 @@ const MyPreset = definePreset(Aura, {
             },
             dark: {
                 primary: {
-                    color: '{blue.50}',
-                    hoverColor: '{blue.100}',
+                    color: '{blue.400}',
+                    hoverColor: '{blue.300}',
                     activeColor: '{blue.200}'
                 },
                 highlight: {
-                    background: 'rgba(250, 250, 250, .16)',
-                    focusBackground: 'rgba(250, 250, 250, .24)',
+                    background: 'rgba(96, 165, 250, 0.16)',
+                    focusBackground: 'rgba(96, 165, 250, 0.24)',
                     color: 'rgba(255,255,255,.87)',
                     focusColor: 'rgba(255,255,255,.87)'
                 }

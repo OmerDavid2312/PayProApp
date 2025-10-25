@@ -1,0 +1,642 @@
+# Cursor Rules for PayPro Angular 20 + PrimeNG 20 Project
+
+You are an expert Angular 20 developer working on a PayPro application. Follow these strict guidelines:
+
+## Project Configuration
+- **Framework**: Angular 20.x with standalone components
+- **UI Library**: PrimeNG 20.x (native components only)
+- **CSS Framework**: PrimeFlex for all layouts and styling
+- **Language**: TypeScript with strict mode enabled
+- **Architecture**: Signal-based reactive programming
+
+
+#i18
+  - use i18 for transalte all text you created! 
+  
+## Angular 20 Modern Syntax
+
+### Component Architecture
+- **MANDATORY**: Always use standalone components (no NgModules)
+- **MANDATORY**: All components must have `standalone: true`
+- **MANDATORY**: Separate HTML and SCSS files (no inline templates/styles)
+- Import dependencies directly in the component's `imports` array
+- Use standalone components for better tree-shaking and performance
+
+### RXJS
+- Prefer to use RXJS over promises
+- Prefer Signal over observables
+
+### Component Structure
+```typescript
+// ✅ component.ts
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, ButtonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './component.html',
+  styleUrl: './component.scss'
+})
+export class ExampleComponent {
+  // ✅ Use inject() instead of constructor injection
+  private readonly service = inject(ExampleService);
+  private readonly router = inject(Router);
+  
+  // ✅ Use signals for reactive state
+  readonly data = signal<Data[]>([]);
+  readonly loading = signal(false);
+  readonly error = signal<string | null>(null);
+  
+  // ✅ Computed signals for derived state
+  readonly filteredData = computed(() => 
+    this.data().filter(item => item.active)
+  );
+}
+```
+
+### File Organization Rules
+```
+src/app/
+├── components/          # Reusable components (used in 2+ pages)
+│   ├── language-selector/
+│   ├── data-table/
+│   └── shared-button/
+├── login/              # Main screen components
+│   ├── login.component.ts
+│   ├── login.component.html
+│   ├── login.component.scss
+│   └── terms/          # Login-specific components
+│       ├── terms.component.ts
+│       ├── terms.component.html
+│       └── terms.component.scss
+├── dashboard/          # Main screen components
+│   ├── dashboard.component.ts
+│   ├── dashboard.component.html
+│   └── dashboard.component.scss
+└── profile/           # Main screen components
+    ├── profile.component.ts
+    ├── profile.component.html
+    └── profile.component.scss
+```
+
+### Component Placement Rules
+- **Main screens** (login, dashboard, profile): `src/app/[screen-name]/`
+- **Page-specific components**: `src/app/[screen-name]/[component-name]/`
+- **Reusable components** (used in 2+ pages): `src/app/components/[component-name]/`
+- **Always separate files**: `.ts`, `.html`, `.scss` (no inline templates/styles)
+
+### Template Syntax
+```html
+<!-- ✅ Use new control flow (@if, @for, @switch) -->
+@if (loading()) {
+  <p-progressSpinner />
+} @else if (error()) {
+  <p-message severity="error" [text]="error()" />
+} @else {
+  @for (item of data(); track item.id) {
+    <p-card [header]="item.title">
+      {{ item.content }}
+    </p-card>
+  }
+}
+
+<!-- ✅ Use @switch for multiple conditions -->
+@switch (status()) {
+  @case ('loading') {
+    <p-progressSpinner />
+  }
+  @case ('error') {
+    <p-message severity="error" text="Something went wrong" />
+  }
+  @default {
+    <p-card>Content loaded</p-card>
+  }
+}
+```
+
+### Forms with Modern Syntax
+```typescript
+interface UserForm {
+  username: FormControl<string>;
+  email: FormControl<string>;
+  password: FormControl<string>;
+}
+
+@Component({...})
+export class UserFormComponent {
+  private readonly fb = inject(FormBuilder);
+  
+  readonly userForm = this.fb.group<UserForm>({
+    username: this.fb.control('', {
+      validators: [Validators.required, Validators.minLength(3)]
+    }),
+    email: this.fb.control('', {
+      validators: [Validators.required, Validators.email]
+    }),
+    password: this.fb.control('', {
+      validators: [Validators.required, Validators.minLength(8)]
+    })
+  });
+  
+  readonly isFormValid = computed(() => this.userForm.valid);
+}
+```
+
+## PrimeNG 20 Component Usage
+
+### Input Components
+```html
+<!-- ✅ Use directive form for simple inputs -->
+<input pInputText 
+       formControlName="username" 
+       placeholder="Enter username"
+       class="w-full" />
+
+<!-- ✅ Use component form for complex inputs -->
+<p-password formControlName="password" 
+            placeholder="Enter password"
+            [toggleMask]="true"
+            [feedback]="false"
+            styleClass="w-full" />
+
+<p-calendar formControlName="date"
+            placeholder="Select date"
+            styleClass="w-full" />
+
+<p-dropdown formControlName="category"
+            [options]="categories()"
+            placeholder="Select category"
+            styleClass="w-full" />
+```
+
+### Form Field Labels
+```html
+<!-- ✅ MANDATORY: Add * to labels for required fields -->
+<label for="username" class="block text-900 font-medium mb-2">
+  {{ 'FORM.username' | translate }} *
+</label>
+<input pInputText id="username" formControlName="username" class="w-full" />
+
+<!-- ✅ Optional fields don't need * -->
+<label for="phone" class="block text-900 font-medium mb-2">
+  {{ 'FORM.phone' | translate }}
+</label>
+<input pInputText id="phone" formControlName="phone" class="w-full" />
+
+<!-- ✅ For i18n labels with required indicator -->
+<label for="email" class="block text-900 font-medium mb-2">
+  {{ 'FORM.email' | translate }} *
+</label>
+<input pInputText id="email" formControlName="email" class="w-full" />
+```
+
+### Layout Components
+```html
+<!-- ✅ Cards for content sections -->
+<p-card header="User Information" styleClass="mb-4">
+  <div class="grid">
+    <div class="col-12 md:col-6">
+      <label for="username">Username</label>
+      <input pInputText id="username" formControlName="username" class="w-full" />
+    </div>
+  </div>
+</p-card>
+
+<!-- ✅ Data tables -->
+<p-table [value]="users()" 
+         [paginator]="true" 
+         [rows]="10"
+         styleClass="p-datatable-sm">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Actions</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-user>
+    <tr>
+      <td>{{ user.name }}</td>
+      <td>{{ user.email }}</td>
+      <td>
+        <p-button icon="pi pi-pencil" 
+                  size="small" 
+                  (onClick)="editUser(user)" />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+```
+
+### Buttons and Actions
+```html
+<!-- ✅ Primary actions -->
+<p-button label="Save" 
+          icon="pi pi-check"
+          [loading]="saving()"
+          [disabled]="!isFormValid()"
+          (onClick)="onSave()" />
+
+<!-- ✅ Secondary actions -->
+<p-button label="Cancel" 
+          severity="secondary"
+          icon="pi pi-times"
+          (onClick)="onCancel()" />
+
+<!-- ✅ Icon buttons -->
+<p-button icon="pi pi-trash" 
+          severity="danger" 
+          size="small"
+          (onClick)="onDelete()" />
+```
+
+## PrimeFlex Layout System
+
+### Flexbox Layouts
+```html
+<!-- ✅ Flex containers -->
+<div class="flex justify-content-between align-items-center">
+  <h2>Page Title</h2>
+  <p-button label="Add New" />
+</div>
+
+<!-- ✅ Flex direction and wrapping -->
+<div class="flex flex-column md:flex-row gap-3">
+  <div class="flex-1">Content 1</div>
+  <div class="flex-1">Content 2</div>
+</div>
+
+<!-- ✅ Alignment utilities -->
+<div class="flex justify-content-center align-items-center min-h-screen">
+  <p-card>Centered content</p-card>
+</div>
+```
+
+### Grid System
+```html
+<!-- ✅ CSS Grid -->
+<div class="grid">
+  <div class="col-12 md:col-6 lg:col-4">
+    <p-card>Card 1</p-card>
+  </div>
+  <div class="col-12 md:col-6 lg:col-4">
+    <p-card>Card 2</p-card>
+  </div>
+  <div class="col-12 md:col-6 lg:col-4">
+    <p-card>Card 3</p-card>
+  </div>
+</div>
+
+<!-- ✅ No gutters for seamless design -->
+<div class="grid grid-nogutter">
+  <div class="col-6">Left panel</div>
+  <div class="col-6">Right panel</div>
+</div>
+```
+
+### Spacing and Sizing
+```html
+<!-- ✅ Padding and margins -->
+<div class="p-4 m-2">             <!-- padding: 1.5rem, margin: 0.5rem -->
+<div class="px-3 py-2">           <!-- horizontal/vertical spacing -->
+<div class="pt-2 pb-4 pl-1 pr-3"> <!-- individual sides -->
+
+<!-- ✅ Gaps -->
+<div class="flex gap-2">          <!-- gap: 0.5rem -->
+<div class="grid gap-4">          <!-- gap: 1.5rem -->
+
+<!-- ✅ Width and height -->
+<div class="w-full h-20rem">      <!-- width: 100%, height: 20rem -->
+<div class="w-6 h-auto">          <!-- width: 50%, height: auto -->
+```
+
+### Responsive Design
+```html
+<!-- ✅ Responsive utilities -->
+<div class="hidden md:block">Only visible on medium+ screens</div>
+<div class="block md:hidden">Only visible on small screens</div>
+
+<!-- ✅ Responsive sizing -->
+<div class="w-full md:w-6 lg:w-4">Responsive width</div>
+
+<!-- ✅ Responsive flex direction -->
+<div class="flex flex-column md:flex-row">
+  <div>Item 1</div>
+  <div>Item 2</div>
+</div>
+```
+
+### Mobile-First Design Requirements
+```html
+<!-- ✅ MANDATORY: Mobile-first responsive design -->
+<div class="container">
+  <!-- Mobile: Full width, Desktop: Centered with max-width -->
+  <div class="w-full max-w-30rem mx-auto">
+    <p-card>
+      <!-- Mobile: Stack vertically, Desktop: Side by side -->
+      <div class="flex flex-column md:flex-row gap-3">
+        <div class="flex-1">Content 1</div>
+        <div class="flex-1">Content 2</div>
+      </div>
+    </p-card>
+  </div>
+</div>
+
+<!-- ✅ Mobile-friendly form layouts -->
+<div class="form-container">
+  <div class="grid">
+    <!-- Mobile: Single column, Desktop: Two columns -->
+    <div class="col-12 md:col-6">
+      <label class="block text-900 font-medium mb-2">
+        {{ 'FORM.field' | translate }} *
+      </label>
+      <input pInputText class="w-full" />
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Mobile-friendly buttons -->
+<div class="flex flex-column md:flex-row gap-2">
+  <p-button label="Primary Action" class="w-full md:w-auto" />
+  <p-button label="Secondary" severity="secondary" class="w-full md:w-auto" />
+</div>
+```
+
+### Mobile Viewport and Layout Rules
+```scss
+// ✅ MANDATORY: Mobile viewport handling
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+}
+
+// ✅ Mobile-first container
+.mobile-container {
+  width: 100%;
+  padding: 1rem;
+  
+  @media (min-width: 768px) {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+// ✅ Mobile-friendly cards
+.mobile-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  
+  @media (min-width: 768px) {
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  @media (max-width: 480px) {
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+}
+```
+
+## Services and State Management
+
+### Modern Service Pattern
+```typescript
+@Injectable({ providedIn: 'root' })
+export class UserService {
+  private readonly http = inject(HttpClient);
+  
+  // ✅ Signal-based state
+  private readonly _users = signal<User[]>([]);
+  private readonly _loading = signal(false);
+  private readonly _error = signal<string | null>(null);
+  
+  // ✅ Read-only public signals
+  readonly users = this._users.asReadonly();
+  readonly loading = this._loading.asReadonly();
+  readonly error = this._error.asReadonly();
+  
+  async loadUsers(): Promise<void> {
+    this._loading.set(true);
+    this._error.set(null);
+    
+    try {
+      const users = await firstValueFrom(
+        this.http.get<User[]>('/api/users')
+      );
+      this._users.set(users);
+    } catch (error) {
+      this._error.set('Failed to load users');
+    } finally {
+      this._loading.set(false);
+    }
+  }
+}
+```
+
+### Functional Guards and Interceptors
+```typescript
+// ✅ Functional guard
+export const authGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  
+  if (authService.isAuthenticated()) {
+    return true;
+  }
+  
+  return router.createUrlTree(['/login']);
+};
+
+// ✅ Functional interceptor
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authService = inject(AuthService);
+  const token = authService.getToken();
+  
+  if (token) {
+    req = req.clone({
+      setHeaders: { Authorization: `Bearer ${token}` }
+    });
+  }
+  
+  return next(req);
+};
+```
+
+## Forbidden Practices
+
+### ❌ Don't Do This
+```typescript
+// ❌ NgModules (use standalone components instead)
+@NgModule({
+  declarations: [MyComponent],
+  imports: [CommonModule]
+})
+export class MyModule {}
+
+// ❌ Components without standalone: true
+@Component({
+  selector: 'app-example',
+  // Missing: standalone: true
+})
+
+// ❌ Inline templates and styles (use separate files)
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  template: `<div>Inline template</div>`,
+  styles: [`.inline { color: red; }`]
+})
+
+// ❌ Wrong file organization
+// ❌ Reusable component in page folder
+src/app/login/shared-button/  // Should be in components/
+
+// ❌ Page-specific component in components folder
+src/app/components/terms/     // Should be in login/terms/
+
+// ❌ Constructor injection (use inject() instead)
+constructor(private service: MyService) {}
+
+// ❌ Old control flow
+*ngIf="condition"
+*ngFor="let item of items"
+
+// ❌ Custom CSS overrides on PrimeNG
+.p-button { background: red !important; }
+
+// ❌ Manual DOM manipulation
+@ViewChild('element') element: ElementRef;
+this.element.nativeElement.style.color = 'red';
+
+// ❌ Subscribing without proper cleanup
+ngOnInit() {
+  this.service.getData().subscribe(data => {
+    this.data = data;
+  });
+}
+```
+
+```html
+<!-- ❌ Missing * for required field labels -->
+<label for="username">{{ 'FORM.username' | translate }}</label>
+<input pInputText id="username" formControlName="username" />
+
+<!-- ❌ Wrong placement of * -->
+<label for="email">* {{ 'FORM.email' | translate }}</label>
+<input pInputText id="email" formControlName="email" />
+
+<!-- ❌ Mobile-unfriendly layouts -->
+<div class="flex flex-row"> <!-- Always use responsive flex -->
+  <div class="w-6">Content</div>
+  <div class="w-6">Content</div>
+</div>
+
+<!-- ❌ Fixed widths without mobile consideration -->
+<div style="width: 400px;">Content</div>
+
+<!-- ❌ Missing mobile viewport meta tag -->
+<!-- Must include: <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+```
+
+### ✅ Do This Instead
+```typescript
+// ✅ Always use standalone components with separate files
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './example.component.html',
+  styleUrl: './example.component.scss'
+})
+export class ExampleComponent {}
+
+// ✅ Correct file organization
+// ✅ Main screen: src/app/login/
+// ✅ Page-specific: src/app/login/terms/
+// ✅ Reusable: src/app/components/language-selector/
+
+// ✅ Modern injection
+private readonly service = inject(MyService);
+
+// ✅ New control flow
+@if (condition) { ... }
+@for (item of items; track item.id) { ... }
+
+// ✅ PrimeFlex utilities
+class="bg-primary text-white border-round p-3"
+
+// ✅ Signal-based state
+readonly data = signal<Data[]>([]);
+
+// ✅ Use signals or async pipe
+@Component({
+  standalone: true,
+  templateUrl: './component.html',
+  styleUrl: './component.scss'
+})
+```
+
+```html
+<!-- ✅ Correct placement of * for required fields -->
+<label for="username" class="block text-900 font-medium mb-2">
+  {{ 'FORM.username' | translate }} *
+</label>
+<input pInputText id="username" formControlName="username" class="w-full" />
+
+<!-- ✅ Optional fields without * -->
+<label for="phone" class="block text-900 font-medium mb-2">
+  {{ 'FORM.phone' | translate }}
+</label>
+<input pInputText id="phone" formControlName="phone" class="w-full" />
+
+<!-- ✅ Mobile-friendly responsive layouts -->
+<div class="flex flex-column md:flex-row gap-3">
+  <div class="flex-1">Content 1</div>
+  <div class="flex-1">Content 2</div>
+</div>
+
+<!-- ✅ Mobile-friendly containers -->
+<div class="w-full max-w-30rem mx-auto p-3">
+  <p-card>Mobile-optimized content</p-card>
+</div>
+
+<!-- ✅ Mobile-friendly buttons -->
+<div class="flex flex-column md:flex-row gap-2">
+  <p-button label="Action" class="w-full md:w-auto" />
+</div>
+```
+
+## Code Quality Standards
+- **MANDATORY**: Always use standalone components (no NgModules)
+- **MANDATORY**: All components must have `standalone: true`
+- **MANDATORY**: Separate HTML and SCSS files (no inline templates/styles)
+- **MANDATORY**: Follow proper file organization:
+  - Main screens: `src/app/[screen-name]/`
+  - Page-specific components: `src/app/[screen-name]/[component-name]/`
+  - Reusable components: `src/app/components/[component-name]/`
+- Always use TypeScript strict mode
+- Implement proper error handling
+- Use OnPush change detection strategy
+- Write comprehensive unit tests
+- Follow SOLID principles
+- Prefer composition over inheritance
+- Use meaningful variable and function names
+- Add JSDoc comments for public APIs
+- **MANDATORY**: Add `*` to all required form field labels (e.g., `{{ 'FORM.field' | translate }} *`)
+- Use i18n for all user-facing text
+- **MANDATORY**: All components must be mobile-friendly with responsive design
+- **MANDATORY**: Use mobile-first approach with `flex flex-column md:flex-row` patterns
+- **MANDATORY**: Test on mobile devices (320px, 375px, 414px, 768px, 1024px)
+- **MANDATORY**: Use `min-height: 100dvh` for mobile viewport handling
+- **MANDATORY**: Avoid fixed widths, use responsive classes (`w-full md:w-6`)
+- **MANDATORY**: Ensure touch targets are at least 44px for mobile accessibility
+
+Remember: Always use PrimeNG components as-is without style overrides, use PrimeFlex for all layouts, and leverage Angular 20's modern features like signals and new control flow syntax.

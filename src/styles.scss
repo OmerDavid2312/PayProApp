@@ -1,5 +1,41 @@
 /* You can add global styles to this file, and also import other style files */
 
+/* RTL Support */
+[dir='rtl'] {
+  text-align: right;
+  direction: rtl;
+}
+
+[dir='ltr'] {
+  text-align: left;
+  direction: ltr;
+}
+
+/* RTL-specific adjustments for PrimeNG components */
+[dir='rtl'] {
+  .p-button-icon-left {
+    margin-left: 0.5rem;
+    margin-right: 0;
+  }
+
+  .p-button-icon-right {
+    margin-right: 0.5rem;
+    margin-left: 0;
+  }
+
+  p-radiobutton,
+  .p-checkbox {
+    margin-left: 0.5rem;
+    margin-right: 0;
+  }
+
+  .p-inputtext,
+  .p-password input,
+  .p-dropdown {
+    text-align: right;
+  }
+}
+
 // PrimeNG Theme - Arya Blue (Dark Theme)
 // Theme is loaded via angular.json for better performance
 
