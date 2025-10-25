@@ -138,19 +138,18 @@
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 4px;
 }
 
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 
   .field-label {
+    margin-bottom: 2px;
     font-size: 0.875rem;
     font-weight: 600;
     color: #334155;
-    margin: 0;
     letter-spacing: 0.01em;
   }
 
@@ -192,7 +191,7 @@
 
     small {
       font-size: 0.8125rem;
-      font-weight: 500;
+      font-weight: 300;
     }
   }
 }
