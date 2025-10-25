@@ -269,16 +269,6 @@
 .forgot-password-container {
   text-align: center;
   margin-top: 0.5rem;
-
-  ::ng-deep .p-button-text {
-    color: #64748b;
-    font-size: 0.9375rem;
-
-    //&:hover {
-    //  color: var(--p-primary-color);
-    //  background: transparent;
-    //}
-  }
 }
 
 // Toast styling
