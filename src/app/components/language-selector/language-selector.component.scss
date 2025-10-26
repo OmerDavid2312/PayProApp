@@ -1,0 +1,68 @@
+// Host element styles (wrapper)
+:host {
+  display: block;
+}
+
+.language-selector {
+  min-width: 140px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.language-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--p-text-color);
+}
+
+.selected-language {
+  padding: 0.25rem 0;
+}
+
+.language-option {
+  padding: 0.5rem 0.75rem;
+  transition: background-color 0.2s ease;
+}
+
+.language-option:hover {
+  background-color: var(--p-highlight-bg);
+
+  .language-name {
+    color: var(--p-primary-color);
+  }
+}
+
+// Custom dropdown styling
+:host ::ng-deep .language-dropdown {
+  .p-select {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .p-select:not(.p-disabled):hover {
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  .p-select:not(.p-disabled).p-focus {
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  .p-select-label {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .p-select-trigger {
+    border: none;
+    background: transparent;
+    padding: 0;
+  }
+
+  .p-select-trigger-icon {
+    color: var(--p-text-muted-color);
+    font-size: 0.8rem;
+  }
+}
